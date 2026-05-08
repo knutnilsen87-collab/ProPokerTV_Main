@@ -1,0 +1,18 @@
+package com.propokertv.api.common.error;
+
+public enum ErrorCode {
+    VALIDATION_ERROR,
+    UNAUTHORIZED,
+    FORBIDDEN,
+    NOT_FOUND,
+    CONFLICT,
+    BAD_REQUEST,
+    INTERNAL_ERROR,
+    CLIP_NOT_VISIBLE,
+    DUPLICATE_REACTION,
+    ALREADY_VOTED,
+    EMAIL_NOT_VERIFIED,
+    INVALID_TOKEN,
+    TOKEN_EXPIRED,
+    OWNERSHIP_REQUIRED
+}

@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: ProPokerTV API
+  version: 0.3.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/auth/signup:
+    post:
+      summary: Signup
+      requestBody:
+        required: true
+      responses:
+        '200': { description: OK }
+  /api/v1/auth/login:
+    post:
+      summary: Login
+      responses:
+        '200': { description: OK }
+  /api/v1/me:
+    get:
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: OK }
+  /api/v1/profiles/me:
+    get:
+      summary: Get my profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: OK }
+  /api/v1/clips:
+    get:
+      summary: List public approved clips
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create clip metadata
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: OK }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

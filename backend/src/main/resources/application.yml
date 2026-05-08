@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: ${APP_NAME:propokertv-api}
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:55436}/${DB_NAME:propokertv}
+    username: ${DB_USERNAME:propokertv}
+    password: ${DB_PASSWORD:propokertv}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_EXPOSE:health,info,metrics}
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  security:
+    issuer: ${JWT_ISSUER:propokertv}
+    access-token-ttl-minutes: ${JWT_ACCESS_TOKEN_TTL_MINUTES:15}
+    refresh-token-ttl-days: ${JWT_REFRESH_TOKEN_TTL_DAYS:30}
+    password-reset-token-ttl-minutes: ${JWT_PASSWORD_RESET_TOKEN_TTL_MINUTES:30}
+    email-verification-token-ttl-hours: ${JWT_EMAIL_VERIFICATION_TOKEN_TTL_HOURS:24}
+    secret: ${JWT_SECRET:change-me}
+    cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+  storage:
+    provider: ${STORAGE_PROVIDER:local}
+    local-root: ${LOCAL_STORAGE_ROOT:./var/storage}
+    s3:
+      bucket: ${S3_BUCKET:}
+      region: ${S3_REGION:}
+      access-key: ${S3_ACCESS_KEY:}
+      secret-key: ${S3_SECRET_KEY:}
+
+logging:
+  level:
+    root: INFO
+    com.propokertv: INFO

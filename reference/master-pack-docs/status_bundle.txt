@@ -1,0 +1,557 @@
+=== PROPOKERTV STATUS BUNDLE ===
+This file is intended for a new developer / CTO / implementation lead.
+It is human-readable first, with a machine-readable JSON block at the end.
+
+PROJECT
+name=ProPokerTV
+project_type=Poker media/social/creator/tournament ecosystem platform
+positioning=Non-gambling operator; media/community platform around poker
+current_source_of_truth=ProPokerTV_Master_Pack_v2.zip
+
+CURRENT STATUS
+
+LOCAL_WORKING_COPY
+windows_root_path=F:\prosjekter\POKER\ProPokerTV_April
+status=unpacked_master_working_copy_present
+recommended_entrypoint=F:\prosjekter\POKER\ProPokerTV_April\README_MASTER.md
+recommended_status_file=F:\prosjekter\POKER\ProPokerTV_April\ProPokerTV_status_bundle.txt
+note=Use this folder as the primary unpacked working directory for development, verification, and cleanup.
+
+stage=Foundation + architecture + repo-hardening planning
+status=Strong consolidated planning artifacts exist; codebase is not yet confirmed compile-verified
+use_master_pack_v2=yes
+production_certified=no
+
+WHAT THIS PROJECT IS
+- A platform where poker players, fans, creators, and tournaments gather when they are not actively playing.
+- The goal is to own attention, culture, discovery, community, and tournament distribution around poker.
+- The product is intentionally positioned away from being a casino or gambling operator.
+
+PRIMARY PRODUCT PILLARS
+- Content: clips, highlights, interviews, analysis, event coverage
+- Identity: users, profiles, creators, rankings, recognition
+- Community: comments, reactions, follows, notifications
+- Recognition: Play of the Week, leaderboards, featured creators
+- Events: tournament hubs, live/event pages, archives
+- Discovery: feeds, categories, search, trending, creator discovery
+
+MVP MUST-HAVES
+- signup/login/auth foundation
+- user profiles + creator pages
+- clip metadata upload flow
+- home feed
+- clip detail pages
+- comments + reactions
+- Play of the Week voting
+- basic leaderboard
+- admin/moderation basics
+
+DEFERRED / LATER
+- full livestreaming stack
+- private messaging
+- advanced recommendation engine
+- creator monetization
+- full tournament partner portal
+- mobile apps
+
+TARGET TECH STACK
+backend=Spring Boot modular monolith
+database=PostgreSQL
+cache=Redis (planned/foundation)
+storage=S3-compatible object storage abstraction (planned/foundation)
+api_style=REST + OpenAPI
+migrations=Flyway
+devops=Docker/dev env starter + CI/CD skeleton
+
+BACKEND MODULES
+- auth
+- user
+- profile
+- creator
+- clip/media
+- comment
+- reaction
+- moderation
+- contest
+- leaderboard
+- storage
+- admin
+- notifications (planned)
+- tournaments (planned)
+
+LATEST IMPORTANT PACKS
+- ProPokerTV_Master_Pack_v1.zip
+- ProPokerTV_Master_Pack_v2.zip
+- ProPokerTV_Cleanup_Verification_Pack.zip
+- ProPokerTV_Compile_Ready_Backend_v3_Pack.zip
+- ProPokerTV_Repo_Hardening_Execution_Pack.zip
+
+IMPORTANT REALITY CHECK
+- Strategy, architecture, product, and repo planning are strong.
+- The main risk is not missing ideas; it is missing compile verification and end-to-end implementation hardening.
+- A new developer should prioritize getting one canonical repo to build, run, migrate, seed, and pass tests.
+
+KNOWN GAPS / PRIORITY FIXES
+- No confirmed compile/build verification recorded
+- Auth flows still need end-to-end completion and verification
+- Refresh token lifecycle not fully confirmed
+- Email verification/reset flows need implementation and testing
+- Comments/reactions/moderation/contest/leaderboard need stronger end-to-end implementation
+- OpenAPI/code sync needs verification
+- CI pipelines need to be enforced against real builds/tests
+- Repo hardening still needs an implementation pass, not just planning
+
+RECOMMENDED NEXT STEPS
+- Run compile-fix / implementation round on latest repo foundation
+- Make auth fully executable and tested
+- Complete profile + clip + comment + moderation vertical slices
+- Add integration tests for critical flows
+- Wire CI to compile/test/migration validation
+- Verify local Docker/dev environment from clean checkout
+- Promote one compile-verified repo as the canonical code source
+
+NEW DEVELOPER START ORDER
+- 1. Read this status bundle
+- 2. Open ProPokerTV_Master_Pack_v2.zip
+- 3. Read 00_START_HERE and master README first
+- 4. Review product foundation, MVP scope, and non-gambling positioning
+- 5. Review architecture/backend/API/database sections
+- 6. Review cleanup/compile-ready/repo-hardening packs
+- 7. Inspect CTO starter repo and latest repo package
+- 8. Perform compile/build verification before adding features
+- 9. Treat unresolved auth/moderation/testing gaps as priority work
+- 10. Do not expand scope before compile-verified baseline exists
+
+SOURCE OF TRUTH RULES
+- Use Master Pack v2 as the current documentation source of truth.
+- If duplicate docs exist across older packs, prefer the newest version found in Master Pack v2.
+- Do not treat any repo as production-ready until compile/build verification has been performed.
+- Do not widen MVP scope until the baseline backend flows are working end-to-end.
+
+MACHINE_READABLE_JSON_BEGIN
+{
+  "bundle_format_version": "1.0",
+  "generated_utc": "2026-04-18T08:40:28Z",
+  "project_name": "ProPokerTV",
+  "project_type": "Poker media, social, creator, and tournament ecosystem platform (non-gambling operator positioning)",
+  "current_source_of_truth": "ProPokerTV_Master_Pack_v2.zip",
+  "primary_stack": {
+    "backend": "Spring Boot modular monolith",
+    "database": "PostgreSQL",
+    "cache": "Redis (planned/foundation)",
+    "storage": "S3-compatible object storage abstraction (planned/foundation)",
+    "api_style": "REST + OpenAPI",
+    "migrations": "Flyway",
+    "devops": "Docker/dev env starter + CI/CD skeleton"
+  },
+  "current_status": {
+    "stage": "Foundation / architecture / handoff / repo-hardening planning",
+    "status": "Strong consolidated planning and starter-repo artifacts exist; not yet compile-verified or production-certified",
+    "confidence": "High for strategy and architecture docs; medium for starter code readiness; low for compile/runtime verification until a real fix/build round is done"
+  },
+  "master_packs": [
+    "ProPokerTV_Master_Pack_v1.zip",
+    "ProPokerTV_Master_Pack_v2.zip"
+  ],
+  "latest_work_packs": [
+    "ProPokerTV_Cleanup_Verification_Pack.zip",
+    "ProPokerTV_Compile_Ready_Backend_v3_Pack.zip",
+    "ProPokerTV_Repo_Hardening_Execution_Pack.zip"
+  ],
+  "core_product_thesis": [
+    "Build the global social/content/community ecosystem for poker outside the actual playing platforms.",
+    "Own attention, culture, identity, discovery, creator relationships, and tournament distribution around poker.",
+    "Position as media/community platform, not gambling operator."
+  ],
+  "primary_product_pillars": [
+    "Content: clips, highlights, interviews, analysis, event coverage",
+    "Identity: users, profiles, creators, rankings, recognition",
+    "Community: comments, reactions, follows, notifications",
+    "Recognition: Play of the Week, leaderboards, featured creators",
+    "Events: tournament hubs, live/event pages, archives",
+    "Discovery: feeds, categories, search, trending, creator discovery"
+  ],
+  "mvp_scope": {
+    "must_have": [
+      "signup/login/auth foundation",
+      "user profiles + creator pages",
+      "clip metadata upload flow",
+      "home feed",
+      "clip detail pages",
+      "comments + reactions",
+      "Play of the Week voting",
+      "basic leaderboard",
+      "admin/moderation basics"
+    ],
+    "deferred": [
+      "full livestreaming stack",
+      "private messaging",
+      "advanced recommendation engine",
+      "creator monetization",
+      "full tournament partner portal",
+      "mobile apps"
+    ]
+  },
+  "backend_modules": [
+    "auth",
+    "user",
+    "profile",
+    "creator",
+    "clip/media",
+    "comment",
+    "reaction",
+    "moderation",
+    "contest",
+    "leaderboard",
+    "storage",
+    "admin",
+    "notifications (planned)",
+    "tournaments (planned)"
+  ],
+  "repo_target_state": {
+    "architecture": "Package-by-feature modular monolith",
+    "required_vertical_slices": [
+      "Auth end-to-end",
+      "Profile end-to-end",
+      "Clip CRUD end-to-end",
+      "Comment/Reaction end-to-end",
+      "Moderation/report queue basics",
+      "Weekly contest/voting basics"
+    ],
+    "quality_target": [
+      "Compile-verifiable",
+      "Local dev bootstrappable",
+      "CI-enforced",
+      "Integration tests for critical flows",
+      "OpenAPI aligned with code"
+    ]
+  },
+  "auth_target": [
+    "JWT access + refresh tokens",
+    "signup/login",
+    "current-user endpoint",
+    "role-based access",
+    "secure password hashing",
+    "email verification flow",
+    "forgot/reset password",
+    "refresh persistence/rotation",
+    "ownership checks"
+  ],
+  "moderation_target": [
+    "report content",
+    "report comments",
+    "moderation queue",
+    "approve/reject clip",
+    "soft delete/hide",
+    "moderation reasons",
+    "audit trail"
+  ],
+  "observability_target": [
+    "structured logging",
+    "request correlation IDs",
+    "health/readiness endpoints",
+    "exception mapping",
+    "metrics naming plan",
+    "audit logging strategy"
+  ],
+  "repo_readiness_assessment": {
+    "strategy_docs": "done-high",
+    "brand_ui_direction": "done-high",
+    "backend_architecture": "done-high",
+    "api_database_design": "done-high",
+    "starter_repo_foundation": "done-medium",
+    "compile_verification": "not_done",
+    "integration_tests": "partial/planned",
+    "ci_hardening": "partial/planned",
+    "production_readiness": "not_done"
+  },
+  "known_gaps": [
+    "No confirmed compile/build verification recorded",
+    "Auth flows still need end-to-end completion and verification",
+    "Refresh token lifecycle not fully confirmed",
+    "Email verification/reset flows need implementation and testing",
+    "Comments/reactions/moderation/contest/leaderboard need stronger end-to-end implementation",
+    "OpenAPI/code sync needs verification",
+    "CI pipelines need to be enforced against real builds/tests",
+    "Repo hardening still needs an implementation pass, not just planning"
+  ],
+  "recommended_next_steps": [
+    "Run compile-fix / implementation round on latest repo foundation",
+    "Make auth fully executable and tested",
+    "Complete profile + clip + comment + moderation vertical slices",
+    "Add integration tests for critical flows",
+    "Wire CI to compile/test/migration validation",
+    "Verify local Docker/dev environment from clean checkout",
+    "Promote one compile-verified repo as the canonical code source"
+  ],
+  "new_developer_start_order": [
+    "1. Read this status bundle",
+    "2. Open ProPokerTV_Master_Pack_v2.zip",
+    "3. Read 00_START_HERE and master README first",
+    "4. Review product foundation, MVP scope, and non-gambling positioning",
+    "5. Review architecture/backend/API/database sections",
+    "6. Review cleanup/compile-ready/repo-hardening packs",
+    "7. Inspect CTO starter repo and latest repo package",
+    "8. Perform compile/build verification before adding features",
+    "9. Treat unresolved auth/moderation/testing gaps as priority work",
+    "10. Do not expand scope before compile-verified baseline exists"
+  ],
+  "source_of_truth_rules": [
+    "Use Master Pack v2 as the current documentation source of truth.",
+    "If duplicate docs exist across older packs, prefer the newest version found in Master Pack v2.",
+    "Do not treat any repo as production-ready until compile/build verification has been performed.",
+    "Do not widen MVP scope until the baseline backend flows are working end-to-end."
+  ],
+  "local_working_copy": {
+    "windows_root_path": "F:\\prosjekter\\POKER\\ProPokerTV_April",
+    "status": "unpacked_master_working_copy_present",
+    "recommended_entrypoint": "F:\\prosjekter\\POKER\\ProPokerTV_April\\README_MASTER.md",
+    "recommended_status_file": "F:\\prosjekter\\POKER\\ProPokerTV_April\\ProPokerTV_status_bundle.txt",
+    "note": "Use this folder as the primary unpacked working directory for development, verification, and cleanup."
+  }
+}
+MACHINE_READABLE_JSON_END
+
+=== STATUS BUNDLE UPDATE ===
+update_id=bootstrap_discovery_v1
+[facts]
+timestamp=2026-04-18 10:53:32 +02:00
+source_of_truth=ProPokerTV_April.zip
+status_bundle_path=F:\prosjekter\POKER\ProPokerTV_April\status_bundle.txt
+backend_root=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend
+repo_readme=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\README.md
+backend_dev_readme=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\README_FOR_DEVELOPERS.md
+pom_xml=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\pom.xml
+docker_compose=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\docker-compose.yml
+env_example=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\.env.example
+application_yml=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\src\main\resources\application.yml
+mvnw_present=False
+maven_wrapper_dir_present=False
+redis_mentioned_in_compose=False
+java_files_count=83
+test_files_count=3
+feature_dirs=api, auth, clip, comment, common, config, contest, creator, domain, dto, error, leaderboard, model, moderation, observability, profile, reaction, repo, security, service, storage, user
+[assumptions]
+canonical_backend_root_is_expected_to_be_the_backend_folder_under_ProPokerTV_WorldClass_CTO_StarterRepo
+all_other_packs_and_docs_are_reference_only_unless_needed_to_unblock_verification
+status_bundle.txt_is_the_only_operational_truth_document_for_this_workflow
+[ambiguity_flags]
+maven_wrapper_missing
+redis_not_present_in_compose_or_not_detected
+test_surface_looks_thin
+[verification_state]
+status=discovery_complete_compile_not_started
+must_check=resolve_backend_root, java_version, maven_availability, compile, flyway_boot_path
+maybe_check=redis_need, openapi_sync, ci_alignment
+defer_if_reversible=full_feature_validation_until_baseline_build_exists
+[progress_tracking]
+phase=bootstrap_discovery
+percent=10
+blocker=maven_wrapper_missing; redis_not_present_in_compose_or_not_detected; test_surface_looks_thin
+[repo_health]
+status=preserved
+structure_fit=good
+ownership_fit=good
+duplication_risk=medium
+boundary_violation_risk=low
+temporary_mess_introduced=no
+cleanup_performed=no
+follow_up_required=yes
+[action_layer]
+recommended_next_action=run_environment_and_toolchain_probe_on_canonical_backend_root
+fallback_action=if_backend_root_is_wrong_or_missing_then_relocate_to_extracted_ProPokerTV_April_folder_and_rerun_discovery
+stop_path_signal=stop_if_backend_root_or_pom_xml_cannot_be_resolved
+[execution_contract]
+next_action_type=verify_only
+next_action_target=canonical_backend_root
+next_action_instruction=probe_java_maven_git_docker_and_validate_that_backend_root_is_buildable
+success_condition_for_next_action=toolchain_state_and_repo_entrypoint_are_known
+verification_for_next_action=status_bundle_updated_with_detected_versions_and_missing_prerequisites
+[closure_readiness]
+can_claim_success=no
+blocked_by=compile_and_runtime_verification_not_yet_done
+=== END STATUS BUNDLE UPDATE ===
+
+=== STATUS BUNDLE UPDATE ===
+update_id=toolchain_probe_v1
+[facts]
+timestamp=2026-04-18 10:57:20 +02:00
+backend_root=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend
+git_root=
+java_present=True
+java_version=Error: Could not find or load main class  | Caused by: java.lang.ClassNotFoundException: 
+java_major=
+maven_present=True
+maven_version=[INFO] Scanning for projects... | Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/3.3.5/spring-boot-starter-parent-3.3.5.pom | Progress (1): 1.1 kB
+git_present=True
+git_version=git: '' is not a git command. See 'git --help'. | System.Management.Automation.RemoteException | The most similar commands are
+docker_present=True
+docker_version=docker: unknown command: docker  | System.Management.Automation.RemoteException | Run 'docker --help' for more information
+docker_compose_present=True
+docker_compose_version=docker: unknown command: docker  | System.Management.Automation.RemoteException | Run 'docker --help' for more information
+backend_root_exists=True
+pom_xml_exists=True
+docker_compose_exists=True
+env_example_exists=True
+mvnw_exists=False
+toolchain_decision=go_for_compile_probe
+go_no_go_reasons=
+[assumptions]
+status_bundle.txt_is_operational_truth
+canonical_backend_root_remains_locked_to_backend_under_ProPokerTV_WorldClass_CTO_StarterRepo
+compile_should_use_maven_or_maven_wrapper_only
+[ambiguity_flags]
+none_detected_in_toolchain_probe
+[verification_state]
+status=toolchain_probe_complete
+must_check=compile_probe, dependency_resolution, spring_boot_startup, flyway_boot_path
+maybe_check=redis_requirement, ci_command_alignment, openapi_sync
+defer_if_reversible=feature_implementation_until_build_path_is_proven
+[progress_tracking]
+phase=toolchain_probe
+percent=12
+blocker=none_detected_in_toolchain_probe
+[repo_health]
+status=preserved
+structure_fit=good
+ownership_fit=good
+duplication_risk=medium
+boundary_violation_risk=low
+temporary_mess_introduced=no
+cleanup_performed=no
+follow_up_required=yes
+[action_layer]
+recommended_next_action=run_compile_probe_without_tests_on_canonical_backend_root
+fallback_action=if_compile_fails_then_classify_first_failure_group_and_fix_narrowly
+stop_path_signal=stop_if_dependency_resolution_or_compile_cannot_start
+[execution_contract]
+next_action_type=verify_only
+next_action_target=canonical_backend_root
+next_action_instruction=run_maven_compile_probe_without_tests_and_capture_first_failure_group
+success_condition_for_next_action=compile_starts_and_first_failure_surface_is_known_or_compile_passes
+verification_for_next_action=status_bundle_updated_with_compile_result_and_first_error_classification
+[closure_readiness]
+can_claim_success=no
+blocked_by=compile_and_runtime_verification_not_yet_done
+=== END STATUS BUNDLE UPDATE ===
+
+=== STATUS BUNDLE UPDATE ===
+update_id=corrected_toolchain_probe_v1
+[facts]
+timestamp=2026-04-18 10:58:34 +02:00
+backend_root=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend
+git_root=
+java_present=True
+java_path=C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin\java.exe
+java_exit_code=0
+java_version=openjdk version "21.0.10" 2026-01-20 LTS | OpenJDK Runtime Environment Temurin-21.0.10+7 (build 21.0.10+7-LTS) | OpenJDK 64-Bit Server VM Temurin-21.0.10+7 (build 21.0.10+7-LTS, mixed mode, sharing)
+java_major=21
+maven_present=True
+maven_path=C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.12\bin\mvn.cmd
+maven_exit_code=0
+maven_version=Apache Maven 3.9.12 (848fbb4bf2d427b72bdb2471c22fced7ebd9a7a1) | Maven home: C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.12 | Java version: 21.0.10, vendor: Eclipse Adoptium, runtime: C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot | Default locale: en_US, platform encoding: UTF-8 | OS name: "windows 11", version: "10.0", arch: "amd64", family: "windows"
+git_present=True
+git_path=C:\Program Files\Git\cmd\git.exe
+git_exit_code=0
+git_version=git version 2.53.0.windows.2
+docker_present=True
+docker_path=C:\Program Files\Docker\Docker\resources\bin\docker.exe
+docker_exit_code=0
+docker_version=Docker version 29.4.0, build 9d7ad9f
+docker_compose_present=True
+docker_compose_exit_code=0
+docker_compose_version=Docker Compose version v5.1.1
+pom_xml_exists=True
+env_example_exists=True
+docker_compose_exists=True
+mvnw_exists=False
+toolchain_decision=go_for_compile_probe
+go_no_go_reasons=
+[assumptions]
+status_bundle.txt_is_operational_truth
+canonical_backend_root_remains_locked
+build_verification_requires_reliable_toolchain_evidence
+[ambiguity_flags]
+none_detected_in_corrected_toolchain_probe
+[verification_state]
+status=corrected_toolchain_probe_complete
+must_check=compile_probe, dependency_resolution, boot_probe, flyway_boot_path
+maybe_check=redis_requirement, ci_alignment, openapi_sync
+defer_if_reversible=feature_implementation_until_build_path_is_proven
+[progress_tracking]
+phase=corrected_toolchain_probe
+percent=14
+blocker=none_detected_in_corrected_toolchain_probe
+[repo_health]
+status=preserved
+structure_fit=good
+ownership_fit=good
+duplication_risk=medium
+boundary_violation_risk=low
+temporary_mess_introduced=no
+cleanup_performed=no
+follow_up_required=yes
+[action_layer]
+recommended_next_action=run_compile_probe_without_tests_on_canonical_backend_root
+fallback_action=if_compile_fails_then_classify_first_failure_group_and_fix_narrowly
+stop_path_signal=stop_if_compile_cannot_start
+[execution_contract]
+next_action_type=verify_only
+next_action_target=canonical_backend_root
+next_action_instruction=run_maven_compile_probe_without_tests_and_capture_first_failure_group
+success_condition_for_next_action=compile_starts_and_first_failure_surface_is_known_or_compile_passes
+verification_for_next_action=status_bundle_updated_with_compile_result_and_error_classification
+[closure_readiness]
+can_claim_success=no
+blocked_by=compile_and_runtime_verification_not_yet_done
+=== END STATUS BUNDLE UPDATE ===
+
+=== STATUS BUNDLE UPDATE ===
+update_id=compile_probe_v1
+[facts]
+timestamp=2026-04-18 11:00:44 +02:00
+backend_root=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend
+compile_command=mvn -q -DskipTests compile
+compile_exit_code=0
+compile_status=compile_pass
+compile_failure_class=none
+compile_log_path=F:\prosjekter\POKER\ProPokerTV_April\06_CTO_STARTER_REPO\ProPokerTV_WorldClass_CTO_StarterRepo\backend\.aegis\compile_probe_v1.log
+compile_summary=
+[assumptions]
+status_bundle.txt_is_operational_truth
+canonical_backend_root_remains_locked
+compile_probe_without_tests_is_the_correct_next_validation_step
+[ambiguity_flags]
+none_detected_in_compile_probe
+[verification_state]
+status=compile_probe_passed
+must_check=env_bootstrap, docker_infra_start, flyway_boot_path, app_startup
+maybe_check=redis_requirement, integration_test_surface, ci_alignment
+defer_if_reversible=feature_expansion_until_runtime_boot_is_proven
+[progress_tracking]
+phase=compile_probe
+percent=17
+blocker=none_detected_in_compile_probe
+[repo_health]
+status=preserved
+structure_fit=good
+ownership_fit=good
+duplication_risk=medium
+boundary_violation_risk=low
+temporary_mess_introduced=no
+cleanup_performed=no
+follow_up_required=yes
+[action_layer]
+recommended_next_action=prepare_runtime_bootstrap_from_canonical_backend_root
+fallback_action=run_packaged_build_probe_if_runtime_bootstrap_is_blocked
+stop_path_signal=stop_if_docker_or_env_bootstrap_cannot_start
+[execution_contract]
+next_action_type=verify_only
+next_action_target=canonical_backend_root_runtime_path
+next_action_instruction=prepare_env_file_and_start_required_local_infra
+success_condition_for_next_action=local_runtime_prerequisites_exist_for_boot_probe
+verification_for_next_action=status_bundle_updated_with_env_and_infra_bootstrap_truth
+[closure_readiness]
+can_claim_success=no
+blocked_by=runtime_verification_not_yet_done
+=== END STATUS BUNDLE UPDATE ===

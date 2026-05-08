@@ -1,0 +1,46 @@
+{
+  "project": "ProPokerTV",
+  "repo_type": "world_class_cto_starter",
+  "backend": {
+    "language": "Java",
+    "framework": "Spring Boot",
+    "architecture": "modular_monolith_package_by_feature",
+    "modules": [
+      "auth",
+      "user",
+      "profile",
+      "creator",
+      "clip",
+      "comment",
+      "reaction",
+      "moderation",
+      "contest",
+      "leaderboard",
+      "storage",
+      "common"
+    ],
+    "database": "PostgreSQL",
+    "migrations": "Flyway"
+  },
+  "implemented_slices": [
+    "signup_login_refresh_skeleton",
+    "current_user_endpoint",
+    "profile_upsert_get_public",
+    "creator_profile_upsert_get",
+    "clip_create_list_detail_update_delete",
+    "comment_create_list_delete",
+    "reaction_create_delete_summary",
+    "report_create_queue",
+    "moderate_clip_decision",
+    "weekly_contest_create_nominate_vote_open",
+    "leaderboard_top_clips"
+  ],
+  "not_yet_finished": [
+    "email_verification_token_storage",
+    "password_reset_token_storage",
+    "refresh_token_rotation",
+    "integration_tests",
+    "signed_uploads",
+    "contest_finalize_job"
+  ]
+}

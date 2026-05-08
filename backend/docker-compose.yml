@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: propokertv-postgres
+    environment:
+      POSTGRES_DB: propokertv
+      POSTGRES_USER: propokertv
+      POSTGRES_PASSWORD: propokertv
+    ports:
+      - "55436:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U propokertv -d propokertv"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

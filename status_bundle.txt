@@ -1,0 +1,30 @@
+PROJECT=ProPokerTV_Main
+STATUS=consolidated_main_repo
+CURRENT_SOURCE_OF_TRUTH=F:\prosjekter\POKER\ProPokerTV_Main
+
+CANONICAL_CODE
+- backend: Spring Boot 3 / Java 21 modular monolith in backend/
+- frontend: React/Vite app in apps/web/
+
+IMPORTED_FROM
+- backend and API foundation: PPTV2026
+- runtime-connected Vite frontend: PPTV2026
+- brand/static frontend assets: PPTVny-slim-git/frontend
+- masterpack status/reference: ProPokerTV_April under reference/
+
+VERIFICATION
+- frontend npm run build: passed
+- backend Maven compile: passed
+- backend Maven test: passed
+- backend runtime health: HTTP 200, {"status":"UP","groups":["liveness","readiness"]}
+- Docker/Postgres verified on port 55436
+
+START_APP
+- Double-click Start-ProPokerTV.cmd
+- App: http://localhost:5173
+- API health: http://localhost:8080/actuator/health
+- Swagger: http://localhost:8080/swagger-ui/index.html
+
+NOTES
+- tools/, node_modules/, dist/, target/, runtime logs and pid files are gitignored.
+- Older workspace folders are archive/reference only unless intentionally imported.
