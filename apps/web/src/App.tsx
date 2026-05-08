@@ -14,7 +14,21 @@ import type {
   CreatorLeaderboardRow,
   Profile,
   ReactionSummary,
+  SocialAuthProvider,
 } from "./types";
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        id?: {
+          initialize: (options: { client_id: string; callback: (response: { credential?: string }) => void }) => void;
+          renderButton: (element: HTMLElement, options: { theme: string; size: string; text: string; width?: number }) => void;
+        };
+      };
+    };
+  }
+}
 
 function formatDuration(seconds?: number | null) {
   if (!seconds && seconds !== 0) return "Live";
@@ -684,12 +698,116 @@ function CreatorPage() {
 
 function AuthPage({ mode }: { mode: "login" | "register" }) {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithProvider } = useAuth();
   const [email, setEmail] = useState(mode === "login" ? "creator@propokertv.test" : "");
   const [password, setPassword] = useState(mode === "login" ? "password" : "");
   const [error, setError] = useState<string | null>(null);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState<string | null>(null);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+  const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID as string | undefined;
+  const microsoftTenantId = (import.meta.env.VITE_MICROSOFT_TENANT_ID as string | undefined) || "common";
+
+  const handleSocialToken = async (provider: SocialAuthProvider, idToken: string) => {
+    setError(null);
+    try {
+      await signInWithProvider(provider, idToken);
+      navigate("/");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Social sign-in failed.");
+    }
+  };
+
+  const startMicrosoftLogin = () => {
+    if (!microsoftClientId) {
+      return;
+    }
+    const state = crypto.randomUUID();
+    const nonce = crypto.randomUUID();
+    window.sessionStorage.setItem("pptv-ms-oauth-state", state);
+    const params = new URLSearchParams({
+      client_id: microsoftClientId,
+      response_type: "id_token",
+      redirect_uri: window.location.origin + window.location.pathname,
+      response_mode: "fragment",
+      scope: "openid profile email",
+      state,
+      nonce,
+      prompt: "select_account",
+    });
+    window.location.href = `https://login.microsoftonline.com/${microsoftTenantId}/oauth2/v2.0/authorize?${params.toString()}`;
+  };
+
+  useEffect(() => {
+    if (!googleClientId) {
+      return;
+    }
+
+    let cancelled = false;
+    const scriptId = "google-identity-services";
+    const mountButton = () => {
+      if (cancelled || !window.google?.accounts?.id) {
+        return;
+      }
+      const buttonRoot = document.getElementById("google-signin-button");
+      if (!buttonRoot || buttonRoot.childElementCount > 0) {
+        return;
+      }
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: async (response) => {
+          if (!response.credential) {
+            setError("Google did not return an identity token.");
+            return;
+          }
+          await handleSocialToken("google", response.credential);
+        },
+      });
+      window.google.accounts.id.renderButton(buttonRoot, {
+        theme: "outline",
+        size: "large",
+        text: mode === "login" ? "signin_with" : "signup_with",
+        width: 320,
+      });
+    };
+
+    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (existing) {
+      mountButton();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = mountButton;
+    document.head.appendChild(script);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [googleClientId, mode]);
+
+  useEffect(() => {
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const idToken = hash.get("id_token");
+    const state = hash.get("state");
+    if (!idToken || !state) {
+      return;
+    }
+    const expectedState = window.sessionStorage.getItem("pptv-ms-oauth-state");
+    window.sessionStorage.removeItem("pptv-ms-oauth-state");
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    if (state !== expectedState) {
+      setError("Microsoft sign-in state did not match. Please try again.");
+      return;
+    }
+    void handleSocialToken("microsoft", idToken);
+  }, []);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -738,6 +856,19 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
       </section>
 
       <section className="panel auth-form">
+        <div className="social-auth stack-sm">
+          {googleClientId ? (
+            <div id="google-signin-button" className="social-provider-button" />
+          ) : (
+            <div className="social-provider-empty">Set VITE_GOOGLE_CLIENT_ID and GOOGLE_OAUTH_CLIENT_ID to enable Google sign-in.</div>
+          )}
+          {microsoftClientId ? (
+            <button className="button secondary" type="button" onClick={startMicrosoftLogin}>
+              Continue with Microsoft
+            </button>
+          ) : null}
+        </div>
+        <div className="auth-divider"><span>or</span></div>
         <form className="stack-sm" onSubmit={submit}>
           <label>
             <span>Email</span>

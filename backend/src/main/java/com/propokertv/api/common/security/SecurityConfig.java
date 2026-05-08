@@ -1,6 +1,7 @@
 package com.propokertv.api.common.security;
 
 import lombok.RequiredArgsConstructor;
+import com.propokertv.api.auth.service.SocialAuthProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
-@EnableConfigurationProperties(AppSecurityProperties.class)
+@EnableConfigurationProperties({AppSecurityProperties.class, SocialAuthProperties.class})
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

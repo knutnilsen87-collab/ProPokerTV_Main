@@ -19,6 +19,11 @@ public class AuthDtos {
             @NotBlank String refreshToken
     ) {}
 
+    public record SocialLoginRequest(
+            @NotBlank String provider,
+            @NotBlank String idToken
+    ) {}
+
     public record ForgotPasswordRequest(
             @Email @NotBlank String email
     ) {}

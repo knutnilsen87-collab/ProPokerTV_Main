@@ -633,6 +633,43 @@ video {
   gap: 10px;
 }
 
+.social-auth {
+  align-items: stretch;
+}
+
+.social-provider-button {
+  min-height: 44px;
+}
+
+.social-provider-empty {
+  border: 1px dashed var(--edge);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  padding: 0.8rem;
+}
+
+.auth-divider {
+  align-items: center;
+  color: var(--text-dim);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 0.8rem;
+  letter-spacing: 0.08em;
+  margin: 1rem 0;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  background: var(--edge);
+  content: "";
+  flex: 1;
+  height: 1px;
+}
+
 .divider-top {
   margin-top: 18px;
   padding-top: 18px;

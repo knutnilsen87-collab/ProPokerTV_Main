@@ -8,7 +8,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import * as api from "../lib/api";
-import type { AuthResponse, CurrentUser } from "../types";
+import type { AuthResponse, CurrentUser, SocialAuthProvider } from "../types";
 
 type StoredTokens = { accessToken: string; refreshToken: string } | null;
 
@@ -20,6 +20,7 @@ type AuthContextValue = {
   setTokens: (tokens: StoredTokens) => void;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  signInWithProvider: (provider: SocialAuthProvider, idToken: string) => Promise<void>;
   signOut: () => void;
   refreshCurrentUser: () => Promise<void>;
 };
@@ -99,6 +100,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
     [setTokens],
   );
 
+  const signInWithProvider = useCallback(
+    async (provider: SocialAuthProvider, idToken: string) => {
+      const response = await api.socialLogin(provider, idToken);
+      const nextTokens = mapAuthToTokens(response);
+      setTokens(nextTokens);
+      const me = await api.getCurrentUser(nextTokens!);
+      setCurrentUser(me);
+      setAuthError(null);
+    },
+    [setTokens],
+  );
+
   const signOut = useCallback(() => {
     setTokens(null);
     setAuthError(null);
@@ -113,10 +126,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setTokens,
       signIn,
       signUp,
+      signInWithProvider,
       signOut,
       refreshCurrentUser,
     }),
-    [currentUser, tokens, loading, authError, setTokens, signIn, signUp, signOut, refreshCurrentUser],
+    [currentUser, tokens, loading, authError, setTokens, signIn, signUp, signInWithProvider, signOut, refreshCurrentUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

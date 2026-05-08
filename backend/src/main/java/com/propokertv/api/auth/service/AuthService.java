@@ -1,7 +1,9 @@
 package com.propokertv.api.auth.service;
 
 import com.propokertv.api.auth.domain.AuthActionTokenType;
+import com.propokertv.api.auth.domain.AuthIdentity;
 import com.propokertv.api.auth.dto.AuthDtos.*;
+import com.propokertv.api.auth.repo.AuthIdentityRepository;
 import com.propokertv.api.common.observability.AnalyticsEventService;
 import com.propokertv.api.common.error.ConflictException;
 import com.propokertv.api.common.error.ErrorCode;
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final AuthActionTokenService authActionTokenService;
+    private final AuthIdentityRepository authIdentityRepository;
+    private final SocialIdentityVerifier socialIdentityVerifier;
     private final AnalyticsEventService analyticsEventService;
     private final com.propokertv.api.common.security.AppSecurityProperties securityProperties;
 
@@ -42,11 +48,7 @@ public class AuthService {
         user.setRole(Role.USER);
         var saved = userRepository.save(user);
 
-        Profile profile = new Profile();
-        profile.setUser(saved);
-        profile.setUsername("user" + saved.getId());
-        profile.setDisplayName("Player " + saved.getId());
-        profileRepository.save(profile);
+        createDefaultProfile(saved, "Player " + saved.getId());
         authActionTokenService.issue(saved, AuthActionTokenType.EMAIL_VERIFICATION,
                 Duration.ofHours(securityProperties.getEmailVerificationTokenTtlHours()));
         analyticsEventService.track("creator_signed_up", Map.of("userId", saved.getId(), "role", saved.getRole().name()));
@@ -76,6 +78,33 @@ public class AuthService {
                 refreshToken.getUser().isEmailVerified(),
                 new AuthTokens(accessToken, rotatedRefreshToken, "Bearer", securityProperties.getAccessTokenTtlMinutes() * 60)
         );
+    }
+
+    @Transactional
+    public AuthResponse socialLogin(SocialLoginRequest request) {
+        SocialIdentity identity = socialIdentityVerifier.verify(request.provider(), request.idToken());
+        var existingIdentity = authIdentityRepository.findByProviderAndProviderSubject(identity.provider(), identity.subject());
+        if (existingIdentity.isPresent()) {
+            return buildAuthResponse(existingIdentity.get().getUser());
+        }
+
+        User user = userRepository.findByEmailIgnoreCase(identity.email()).orElseGet(() -> createSocialUser(identity.email()));
+        if (!user.isEmailVerified()) {
+            user.setEmailVerified(true);
+            userRepository.save(user);
+        }
+
+        AuthIdentity authIdentity = new AuthIdentity();
+        authIdentity.setUser(user);
+        authIdentity.setProvider(identity.provider());
+        authIdentity.setProviderSubject(identity.subject());
+        authIdentity.setEmail(identity.email());
+        authIdentityRepository.save(authIdentity);
+        analyticsEventService.track("social_auth_connected", Map.of(
+                "userId", user.getId(),
+                "provider", identity.provider()
+        ));
+        return buildAuthResponse(user);
     }
 
     @Transactional
@@ -115,5 +144,37 @@ public class AuthService {
                 user.isEmailVerified(),
                 new AuthTokens(accessToken, refreshToken, "Bearer", securityProperties.getAccessTokenTtlMinutes() * 60)
         );
+    }
+
+    private User createSocialUser(String email) {
+        User user = new User();
+        user.setEmail(email.toLowerCase(Locale.ROOT));
+        user.setPasswordHash(passwordHasher.hash(UUID.randomUUID().toString() + UUID.randomUUID()));
+        user.setRole(Role.USER);
+        user.setEmailVerified(true);
+        User saved = userRepository.save(user);
+        createDefaultProfile(saved, displayNameFromEmail(email));
+        analyticsEventService.track("creator_signed_up", Map.of(
+                "userId", saved.getId(),
+                "role", saved.getRole().name(),
+                "source", "social"
+        ));
+        return saved;
+    }
+
+    private void createDefaultProfile(User user, String displayName) {
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setUsername("user" + user.getId());
+        profile.setDisplayName(displayName);
+        profileRepository.save(profile);
+    }
+
+    private String displayNameFromEmail(String email) {
+        String localPart = email.split("@", 2)[0].replaceAll("[._-]+", " ").trim();
+        if (localPart.isBlank()) {
+            return "Player";
+        }
+        return localPart.length() > 80 ? localPart.substring(0, 80) : localPart;
     }
 }

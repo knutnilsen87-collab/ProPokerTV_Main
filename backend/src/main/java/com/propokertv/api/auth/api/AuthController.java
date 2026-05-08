@@ -28,6 +28,11 @@ public class AuthController {
         return ApiEnvelope.ok(authService.refresh(request));
     }
 
+    @PostMapping("/social")
+    public ApiEnvelope<AuthResponse> social(@RequestBody @Valid SocialLoginRequest request) {
+        return ApiEnvelope.ok(authService.socialLogin(request));
+    }
+
     @PostMapping("/forgot-password")
     public ApiEnvelope<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
         authService.requestPasswordReset(request);

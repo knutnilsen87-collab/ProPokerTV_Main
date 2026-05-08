@@ -50,6 +50,17 @@ app:
       region: ${S3_REGION:}
       access-key: ${S3_ACCESS_KEY:}
       secret-key: ${S3_SECRET_KEY:}
+  social-auth:
+    providers:
+      google:
+        issuer: https://accounts.google.com
+        jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+        client-id: ${GOOGLE_OAUTH_CLIENT_ID:}
+      microsoft:
+        issuer: https://login.microsoftonline.com/common/v2.0
+        jwk-set-uri: https://login.microsoftonline.com/common/discovery/v2.0/keys
+        client-id: ${MICROSOFT_OAUTH_CLIENT_ID:}
+        trust-email: ${MICROSOFT_OAUTH_TRUST_EMAIL:true}
 
 logging:
   level:

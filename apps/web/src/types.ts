@@ -137,3 +137,5 @@ export type AuthResponse = {
   emailVerified: boolean;
   tokens: AuthTokens;
 };
+
+export type SocialAuthProvider = "google" | "microsoft";

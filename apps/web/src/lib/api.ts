@@ -12,6 +12,7 @@ import type {
   Profile,
   ReactionSummary,
   Report,
+  SocialAuthProvider,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
@@ -116,6 +117,13 @@ export async function login(email: string, password: string): Promise<AuthRespon
   return request<AuthResponse>("/api/v1/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function socialLogin(provider: SocialAuthProvider, idToken: string): Promise<AuthResponse> {
+  return request<AuthResponse>("/api/v1/auth/social", {
+    method: "POST",
+    body: JSON.stringify({ provider, idToken }),
   });
 }
 
