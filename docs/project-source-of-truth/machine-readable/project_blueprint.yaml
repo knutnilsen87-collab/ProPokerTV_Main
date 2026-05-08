@@ -1,0 +1,102 @@
+project: ProPokerTV
+source_of_truth_version: 1
+updated_at: '2026-05-08'
+product_category: non_gambling_poker_media_and_reputation_layer
+mvp_wedge: weekly_poker_clip_league
+north_star: ProPokerTV helps poker creators and players build reputation through weekly
+  highlight contests.
+current_repo:
+  backend:
+    language: Java
+    framework: Spring Boot
+    architecture: modular_monolith_package_by_feature
+    database: PostgreSQL
+    migrations: Flyway
+    modules:
+    - auth
+    - user
+    - profile
+    - creator
+    - clip
+    - comment
+    - reaction
+    - moderation
+    - contest
+    - leaderboard
+    - storage
+    - common
+  frontend:
+    framework: React
+    build_tool: Vite
+    language: TypeScript
+    app_path: apps/web
+  canonical_runtime_code:
+  - backend
+  - apps/web
+  reference_only:
+  - reference
+implemented_slices_from_repo_blueprint:
+- signup_login_refresh_skeleton
+- current_user_endpoint
+- profile_upsert_get_public
+- creator_profile_upsert_get
+- clip_create_list_detail_update_delete
+- comment_create_list_delete
+- reaction_create_delete_summary
+- report_create_queue
+- moderate_clip_decision
+- weekly_contest_create_nominate_vote_open
+- leaderboard_top_clips
+known_unfinished_from_repo_blueprint:
+- email_verification_token_storage
+- password_reset_token_storage
+- refresh_token_rotation
+- integration_tests
+- signed_uploads
+- contest_finalize_job
+core_loops:
+  creator_loop: creator posts clip -> gets votes/views -> earns status -> posts again
+  fan_loop: fan watches -> votes/reacts/comments -> influences leaderboard -> returns
+    next week
+  competition_loop: weekly contest -> nominations -> voting -> winner -> history ->
+    repeat
+  reputation_loop: creator history -> badges/rankings -> credibility -> opportunities
+  partner_loop: club/event/brand sponsors contest -> visibility/analytics/leads ->
+    repeats
+build_now:
+- frontend_ci
+- contest_first_homepage
+- frontend_decomposition
+- contest_finalize_job
+- winner_history
+- creator_reputation_v0
+- contest_lifecycle_integration_tests
+- moderation_permission_hardening
+- basic_metrics
+do_not_build_now:
+- native_mobile_app
+- full_marketplace
+- livestreaming
+- advanced_ai_tagging
+- complex_recommendation_engine
+- full_partner_dashboard
+- gambling_or_betting_features
+success_metrics:
+  creators_activated: 20
+  clips_posted_30_days: 50
+  creator_repeat_posting_rate: 0.3
+  contest_votes_first_month: 300
+  comments_reactions_first_month: 100
+  weekly_contests_completed_minimum: 1
+  partner_interest_yes: 3
+critical_invariants:
+- only_approved_clips_can_be_nominated
+- user_can_vote_once_per_contest_category
+- finalized_contest_does_not_accept_votes
+- winner_history_is_persisted
+- creator_reputation_is_backend_derived
+- admin_actions_require_admin_role
+- platform_remains_non_gambling
+recommended_next_action: Add frontend CI for apps/web.
+fallback_action: Implement contest-first homepage using existing APIs and document
+  missing API gaps.

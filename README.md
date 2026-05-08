@@ -2,6 +2,18 @@
 
 Consolidated main repo for ProPokerTV: a non-gambling poker media, creator, clips, community, contest, and leaderboard platform.
 
+## Project Source of Truth
+
+The canonical product and delivery source of truth lives in:
+
+`docs/project-source-of-truth/00_START_HERE.md`
+
+Current priority:
+
+> Build ProPokerTV as the Weekly Poker Clip League MVP.
+
+Do not build broad ecosystem features until the weekly contest loop is verified end-to-end.
+
 ## What This Repo Contains
 
 - `backend/` - Spring Boot 3 / Java 21 modular monolith with auth, profiles, creators, clips, comments, reactions, moderation, weekly contests, leaderboards, Flyway, OpenAPI, and tests.
@@ -52,4 +64,4 @@ The seed data includes:
 
 ## Source of Truth
 
-See `SOURCE_OF_TRUTH.md`. Older folders in `F:\prosjekter\POKER` are now archive/reference material unless intentionally imported here.
+Start with `docs/project-source-of-truth/00_START_HERE.md` for current product and delivery direction. `SOURCE_OF_TRUTH.md` remains the repo consolidation note. Older folders in `F:\prosjekter\POKER` are now archive/reference material unless intentionally imported here.

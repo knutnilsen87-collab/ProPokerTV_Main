@@ -1,0 +1,108 @@
+{
+  "project": "ProPokerTV",
+  "bundle_version": 1,
+  "updated_at": "2026-05-08",
+  "phase": "MVP wedge alignment",
+  "current_goal": "Turn existing ProPokerTV foundation into the Weekly Poker Clip League MVP.",
+  "facts": [
+    "signup_login_refresh_skeleton",
+    "current_user_endpoint",
+    "profile_upsert_get_public",
+    "creator_profile_upsert_get",
+    "clip_create_list_detail_update_delete",
+    "comment_create_list_delete",
+    "reaction_create_delete_summary",
+    "report_create_queue",
+    "moderate_clip_decision",
+    "weekly_contest_create_nominate_vote_open",
+    "leaderboard_top_clips"
+  ],
+  "assumptions": [
+    "Current repo runs locally as documented.",
+    "Web MVP is the correct first launch surface.",
+    "The immediate business goal is to validate the creator/fan contest loop."
+  ],
+  "ambiguity_flags": [
+    "Frontend API coverage for contest/admin flow must be verified in code.",
+    "Exact current App.tsx decomposition state must be checked before refactor.",
+    "Auth/session hardening level must be verified before public beta."
+  ],
+  "verification_state": {
+    "status": "source_of_truth_ready_static_only",
+    "must_check": [
+      "backend mvn test",
+      "frontend npm run build",
+      "existing contest endpoints",
+      "vote-once behavior",
+      "admin nomination/finalization support"
+    ],
+    "maybe_check": [
+      "OpenAPI endpoint review",
+      "manual fullstack smoke",
+      "security review for local demo credentials"
+    ]
+  },
+  "progress_tracking": {
+    "phase": "source_of_truth_created",
+    "percent": 5,
+    "blocker": "No independently verified full contest lifecycle yet."
+  },
+  "scope_lock": {
+    "build_now": [
+      "frontend_ci",
+      "contest_first_homepage",
+      "frontend_decomposition",
+      "contest_finalize_job",
+      "winner_history",
+      "creator_reputation_v0",
+      "contest_lifecycle_integration_tests",
+      "moderation_permission_hardening",
+      "basic_metrics"
+    ],
+    "do_not_build_now": [
+      "native_mobile_app",
+      "full_marketplace",
+      "livestreaming",
+      "advanced_ai_tagging",
+      "complex_recommendation_engine",
+      "full_partner_dashboard",
+      "gambling_or_betting_features"
+    ]
+  },
+  "locked_decisions": [
+    "MVP wedge is Weekly Poker Clip League.",
+    "ProPokerTV remains non-gambling.",
+    "Use existing backend modular monolith; do not create parallel domain models.",
+    "Contest/reputation loop is priority over marketplace/AI/mobile."
+  ],
+  "recommended_next_action": "PR 1: add frontend CI for apps/web.",
+  "fallback_action": "If CI setup blocks, create ContestHomePage using existing API data and document missing endpoint gaps.",
+  "stop_path_signal": "If weekly contest lifecycle cannot be verified end-to-end, stop broad feature work and fix contest lifecycle first.",
+  "restart_layer": "docs/project-source-of-truth/00_START_HERE.md",
+  "execution_contract": {
+    "next_action_type": "code_patch",
+    "next_action_target": ".github/workflows/frontend-ci.yml",
+    "next_action_instruction": "Add frontend CI that installs dependencies in apps/web and runs npm run build.",
+    "success_condition_for_next_action": "GitHub Actions runs frontend build for changes under apps/web and exits green.",
+    "verification_for_next_action": "Run frontend build locally or in CI; confirm backend CI remains unchanged."
+  },
+  "causal_bridge": "Frontend CI prevents false green before product-facing contest homepage and reputation work.",
+  "closure_readiness": {
+    "can_claim_success": false,
+    "blocked_by": [
+      "contest_finalize_job unfinished",
+      "integration_tests unfinished",
+      "MVP user journeys not yet proven with real creators/fans"
+    ]
+  },
+  "repo_health": {
+    "status": "improved_by_source_of_truth",
+    "structure_fit": "Docs live under docs/project-source-of-truth without changing runtime code.",
+    "ownership_fit": "Docs define module ownership and prevent broad template dump.",
+    "duplication_risk": "Low if this folder becomes canonical and older reference material remains reference-only.",
+    "boundary_violation_risk": "Low for docs; medium for upcoming implementation if contest/reputation boundaries are ignored.",
+    "temporary_mess_introduced": false,
+    "cleanup_performed": "Condensed template intent into focused ProPokerTV docs.",
+    "follow_up_required": true
+  }
+}

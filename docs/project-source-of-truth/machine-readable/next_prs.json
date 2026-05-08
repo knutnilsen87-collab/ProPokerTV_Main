@@ -1,0 +1,99 @@
+{
+  "next_prs": [
+    {
+      "id": 1,
+      "title": "Frontend CI",
+      "target": ".github/workflows/frontend-ci.yml",
+      "verification": [
+        "apps/web npm run build"
+      ],
+      "risk": "low"
+    },
+    {
+      "id": 2,
+      "title": "Contest-first homepage",
+      "target": "apps/web/src",
+      "verification": [
+        "frontend build",
+        "manual homepage smoke"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": 3,
+      "title": "Frontend decomposition",
+      "target": "apps/web/src/App.tsx and pages",
+      "verification": [
+        "frontend build",
+        "route smoke"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": 4,
+      "title": "Contest finalize job",
+      "target": "backend contest module",
+      "verification": [
+        "contest lifecycle integration tests"
+      ],
+      "risk": "medium_high"
+    },
+    {
+      "id": 5,
+      "title": "Creator reputation v0",
+      "target": "backend creator/leaderboard modules + frontend creator profile",
+      "verification": [
+        "reputation update tests",
+        "frontend profile smoke"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": 6,
+      "title": "Contest lifecycle integration tests",
+      "target": "backend/src/test",
+      "verification": [
+        "mvn test"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": 7,
+      "title": "Moderation hardening",
+      "target": "backend moderation/admin permissions",
+      "verification": [
+        "permission tests",
+        "moderation flow tests"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": 8,
+      "title": "Upload/storage readiness",
+      "target": "backend storage + frontend clip create",
+      "verification": [
+        "clip create smoke",
+        "input validation tests"
+      ],
+      "risk": "medium_high"
+    },
+    {
+      "id": 9,
+      "title": "Analytics events v0",
+      "target": "backend events/logging or lightweight analytics",
+      "verification": [
+        "events emitted/countable"
+      ],
+      "risk": "low_medium"
+    },
+    {
+      "id": 10,
+      "title": "Founder Season readiness",
+      "target": "docs + seed/demo + admin runbook",
+      "verification": [
+        "manual runbook smoke"
+      ],
+      "risk": "low_medium"
+    }
+  ]
+}

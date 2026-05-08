@@ -1,0 +1,41 @@
+{
+  "source_of_truth_root": "docs/project-source-of-truth",
+  "read_order": [
+    "00_START_HERE.md",
+    "01_PRODUCT_NORTH_STAR.md",
+    "02_END_PRODUCT_DEFINITION.md",
+    "03_MVP_SCOPE.md",
+    "04_BUILD_ORDER.md",
+    "05_DEFINITION_OF_DONE.md",
+    "06_ACCEPTANCE_CRITERIA.md",
+    "07_TECHNICAL_ARCHITECTURE.md",
+    "08_CANONICAL_DOMAIN_MODEL.md",
+    "09_API_AND_DATA_CONTRACTS.md",
+    "10_STATUS_BUNDLE.md",
+    "11_CODEX_EXECUTION_GUIDE.md",
+    "12_RISKS_NON_GOALS_AND_TRAPS.md",
+    "13_GO_TO_MARKET_AND_METRICS.md"
+  ],
+  "machine_readable": [
+    "machine-readable/project_blueprint.yaml",
+    "machine-readable/status_bundle.json",
+    "machine-readable/next_prs.json",
+    "machine-readable/document_registry.json"
+  ],
+  "canonical_docs": {
+    "start": "00_START_HERE.md",
+    "north_star": "01_PRODUCT_NORTH_STAR.md",
+    "end_product": "02_END_PRODUCT_DEFINITION.md",
+    "mvp_scope": "03_MVP_SCOPE.md",
+    "build_order": "04_BUILD_ORDER.md",
+    "dod": "05_DEFINITION_OF_DONE.md",
+    "acceptance": "06_ACCEPTANCE_CRITERIA.md",
+    "architecture": "07_TECHNICAL_ARCHITECTURE.md",
+    "domain_model": "08_CANONICAL_DOMAIN_MODEL.md",
+    "api_contracts": "09_API_AND_DATA_CONTRACTS.md",
+    "status_bundle": "10_STATUS_BUNDLE.md",
+    "codex_guide": "11_CODEX_EXECUTION_GUIDE.md",
+    "risks": "12_RISKS_NON_GOALS_AND_TRAPS.md",
+    "gtm_metrics": "13_GO_TO_MARKET_AND_METRICS.md"
+  }
+}
