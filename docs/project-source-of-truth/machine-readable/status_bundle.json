@@ -2,8 +2,8 @@
   "project": "ProPokerTV",
   "bundle_version": 1,
   "updated_at": "2026-05-08",
-  "phase": "MVP wedge alignment",
-  "current_goal": "Turn existing ProPokerTV foundation into the Weekly Poker Clip League MVP.",
+  "phase": "MVP loop implemented and verified locally",
+  "current_goal": "Prepare the Weekly Poker Clip League MVP for pilot hardening.",
   "facts": [
     "signup_login_refresh_skeleton",
     "current_user_endpoint",
@@ -15,7 +15,21 @@
     "report_create_queue",
     "moderate_clip_decision",
     "weekly_contest_create_nominate_vote_open",
-    "leaderboard_top_clips"
+    "leaderboard_top_clips",
+    "frontend_ci_workflow",
+    "contest_first_homepage",
+    "contest_finalization",
+    "winner_history",
+    "creator_reputation_v0",
+    "leaderboard_top_creators",
+    "analytics_event_logs_v0",
+    "founder_season_runbook",
+    "design_system_docs",
+    "screen_by_screen_spec",
+    "frontend_component_ownership_docs",
+    "admin_contest_page",
+    "moderation_queue_page",
+    "clip_report_action"
   ],
   "assumptions": [
     "Current repo runs locally as documented.",
@@ -23,18 +37,15 @@
     "The immediate business goal is to validate the creator/fan contest loop."
   ],
   "ambiguity_flags": [
-    "Frontend API coverage for contest/admin flow must be verified in code.",
-    "Exact current App.tsx decomposition state must be checked before refactor.",
-    "Auth/session hardening level must be verified before public beta."
+    "Scheduled finalization and signed uploads remain explicit follow-up decisions.",
+    "Legacy App.tsx still contains several page implementations and should continue shrinking."
   ],
   "verification_state": {
-    "status": "source_of_truth_ready_static_only",
+    "status": "verified_local",
     "must_check": [
-      "backend mvn test",
-      "frontend npm run build",
-      "existing contest endpoints",
-      "vote-once behavior",
-      "admin nomination/finalization support"
+      "signed upload or link-first launch decision",
+      "scheduled finalization decision",
+      "continued frontend decomposition"
     ],
     "maybe_check": [
       "OpenAPI endpoint review",
@@ -43,21 +54,17 @@
     ]
   },
   "progress_tracking": {
-    "phase": "source_of_truth_created",
-    "percent": 5,
-    "blocker": "No independently verified full contest lifecycle yet."
+    "phase": "mvp_loop_verified_local",
+    "percent": 90,
+    "blocker": "No current local verification blocker."
   },
   "scope_lock": {
     "build_now": [
-      "frontend_ci",
-      "contest_first_homepage",
-      "frontend_decomposition",
-      "contest_finalize_job",
-      "winner_history",
-      "creator_reputation_v0",
-      "contest_lifecycle_integration_tests",
-      "moderation_permission_hardening",
-      "basic_metrics"
+      "fullstack_smoke",
+      "continue_frontend_decomposition",
+      "scheduled_contest_finalization",
+      "signed_upload_or_link_first_decision",
+      "production_secret_and_cors_setup"
     ],
     "do_not_build_now": [
       "native_mobile_app",
@@ -75,34 +82,32 @@
     "Use existing backend modular monolith; do not create parallel domain models.",
     "Contest/reputation loop is priority over marketplace/AI/mobile."
   ],
-  "recommended_next_action": "PR 1: add frontend CI for apps/web.",
-  "fallback_action": "If CI setup blocks, create ContestHomePage using existing API data and document missing endpoint gaps.",
-  "stop_path_signal": "If weekly contest lifecycle cannot be verified end-to-end, stop broad feature work and fix contest lifecycle first.",
+  "recommended_next_action": "Continue frontend decomposition, then decide signed upload vs link-first launch.",
+  "fallback_action": "Keep admin-triggered finalization and link-first clips for founder pilot if scheduled jobs or signed uploads are not required.",
+  "stop_path_signal": "Do not claim public beta readiness until upload/link safety and production secret/CORS setup are explicitly accepted.",
   "restart_layer": "docs/project-source-of-truth/00_START_HERE.md",
   "execution_contract": {
     "next_action_type": "code_patch",
-    "next_action_target": ".github/workflows/frontend-ci.yml",
-    "next_action_instruction": "Add frontend CI that installs dependencies in apps/web and runs npm run build.",
-    "success_condition_for_next_action": "GitHub Actions runs frontend build for changes under apps/web and exits green.",
-    "verification_for_next_action": "Run frontend build locally or in CI; confirm backend CI remains unchanged."
+    "next_action_target": "frontend decomposition and upload/storage decision",
+    "next_action_instruction": "Move remaining route-level pages out of App.tsx and document launch choice for clip submission.",
+    "success_condition_for_next_action": "App.tsx contains shell/routes only and clip submission launch path is explicit.",
+    "verification_for_next_action": "npm run build and focused browser smoke."
   },
   "causal_bridge": "Frontend CI prevents false green before product-facing contest homepage and reputation work.",
   "closure_readiness": {
     "can_claim_success": false,
     "blocked_by": [
-      "contest_finalize_job unfinished",
-      "integration_tests unfinished",
       "MVP user journeys not yet proven with real creators/fans"
     ]
   },
   "repo_health": {
-    "status": "improved_by_source_of_truth",
+    "status": "mvp_loop_implemented_pending_db_test",
     "structure_fit": "Docs live under docs/project-source-of-truth without changing runtime code.",
     "ownership_fit": "Docs define module ownership and prevent broad template dump.",
     "duplication_risk": "Low if this folder becomes canonical and older reference material remains reference-only.",
     "boundary_violation_risk": "Low for docs; medium for upcoming implementation if contest/reputation boundaries are ignored.",
     "temporary_mess_introduced": false,
-    "cleanup_performed": "Condensed template intent into focused ProPokerTV docs.",
+    "cleanup_performed": "Implemented frontend CI, contest-first homepage, finalization, winner history, creator reputation, analytics v0, founder runbook, design docs, admin contest screen, moderation queue screen, and clip reporting.",
     "follow_up_required": true
   }
 }

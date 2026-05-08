@@ -20,6 +20,11 @@ public class ContestController {
         return ApiEnvelope.ok(contestService.getOpenContest());
     }
 
+    @GetMapping("/history")
+    public ApiEnvelope<java.util.List<ContestResponse>> winnerHistory() {
+        return ApiEnvelope.ok(contestService.winnerHistory());
+    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','MODERATOR')")
     @PostMapping
     public ApiEnvelope<ContestResponse> create(@RequestBody @Valid CreateContestRequest request) {
@@ -27,9 +32,21 @@ public class ContestController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','MODERATOR')")
+    @PostMapping("/{contestId}/open")
+    public ApiEnvelope<ContestResponse> open(@PathVariable Long contestId) {
+        return ApiEnvelope.ok(contestService.open(contestId));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','MODERATOR')")
     @PostMapping("/{contestId}/entries")
     public ApiEnvelope<ContestResponse> nominate(@PathVariable Long contestId, @RequestBody @Valid NominateClipRequest request) {
         return ApiEnvelope.ok(contestService.nominate(contestId, request));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','MODERATOR')")
+    @PostMapping("/{contestId}/finalize")
+    public ApiEnvelope<ContestResponse> finalizeContest(@PathVariable Long contestId) {
+        return ApiEnvelope.ok(contestService.finalizeContest(contestId));
     }
 
     @PreAuthorize("isAuthenticated()")

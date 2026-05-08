@@ -17,6 +17,10 @@ This folder is the operational source of truth for turning the current ProPokerT
 11. `11_CODEX_EXECUTION_GUIDE.md`
 12. `12_RISKS_NON_GOALS_AND_TRAPS.md`
 13. `13_GO_TO_MARKET_AND_METRICS.md`
+14. `14_DESIGN_SYSTEM_AND_UX_DIRECTION.md`
+15. `15_SCREEN_BY_SCREEN_PRODUCT_SPEC.md`
+16. `16_FRONTEND_COMPONENT_OWNERSHIP.md`
+17. `17_FOUNDER_SEASON_RUNBOOK.md`
 
 Machine-readable files live in `machine-readable/`.
 
@@ -41,22 +45,18 @@ The repo already contains a working foundation:
 
 Known current unfinished items from the repo blueprint:
 
-- `email_verification_token_storage`
-- `password_reset_token_storage`
-- `refresh_token_rotation`
 - `integration_tests`
 - `signed_uploads`
-- `contest_finalize_job`
+- `scheduled_contest_finalize_job`
+- fullstack smoke with running backend/frontend
 
 ## Immediate recommended PR sequence
 
-1. Add frontend CI for `apps/web`.
-2. Make weekly contest the homepage experience.
-3. Decompose large frontend pages/components without behavior change.
-4. Implement contest finalization and winner history.
-5. Add creator reputation v0.
-6. Add integration tests for contest lifecycle.
-7. Add safety/security hardening for auth, upload, moderation, and voting.
+1. Run backend integration tests with PostgreSQL available.
+2. Smoke Weekly Contest, Admin Contest, and Moderation Queue in browser.
+3. Continue decomposing legacy `App.tsx` pages into owned page/feature files.
+4. Decide signed upload vs link-first launch.
+5. Add scheduled contest finalization if admin-triggered finalization is not enough.
 
 ## Agent rule
 

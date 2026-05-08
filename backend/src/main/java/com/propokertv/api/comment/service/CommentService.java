@@ -6,12 +6,14 @@ import com.propokertv.api.comment.dto.CommentDtos.*;
 import com.propokertv.api.comment.repo.CommentRepository;
 import com.propokertv.api.common.error.ForbiddenException;
 import com.propokertv.api.common.error.NotFoundException;
+import com.propokertv.api.common.observability.AnalyticsEventService;
 import com.propokertv.api.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ClipRepository clipRepository;
     private final UserRepository userRepository;
+    private final AnalyticsEventService analyticsEventService;
 
     @Transactional
     public CommentResponse create(Long userId, String clipSlug, CreateCommentRequest request) {
@@ -32,7 +35,9 @@ public class CommentService {
             var parent = commentRepository.findById(request.parentCommentId()).orElseThrow(() -> new NotFoundException("Parent comment not found"));
             comment.setParentComment(parent);
         }
-        return toResponse(commentRepository.save(comment));
+        var saved = commentRepository.save(comment);
+        analyticsEventService.track("comment_created", Map.of("commentId", saved.getId(), "clipId", clip.getId(), "authorUserId", userId));
+        return toResponse(saved);
     }
 
     @Transactional(readOnly = true)

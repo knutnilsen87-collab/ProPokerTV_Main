@@ -14,7 +14,11 @@
     "10_STATUS_BUNDLE.md",
     "11_CODEX_EXECUTION_GUIDE.md",
     "12_RISKS_NON_GOALS_AND_TRAPS.md",
-    "13_GO_TO_MARKET_AND_METRICS.md"
+    "13_GO_TO_MARKET_AND_METRICS.md",
+    "14_DESIGN_SYSTEM_AND_UX_DIRECTION.md",
+    "15_SCREEN_BY_SCREEN_PRODUCT_SPEC.md",
+    "16_FRONTEND_COMPONENT_OWNERSHIP.md",
+    "17_FOUNDER_SEASON_RUNBOOK.md"
   ],
   "machine_readable": [
     "machine-readable/project_blueprint.yaml",
@@ -36,6 +40,10 @@
     "status_bundle": "10_STATUS_BUNDLE.md",
     "codex_guide": "11_CODEX_EXECUTION_GUIDE.md",
     "risks": "12_RISKS_NON_GOALS_AND_TRAPS.md",
-    "gtm_metrics": "13_GO_TO_MARKET_AND_METRICS.md"
+    "gtm_metrics": "13_GO_TO_MARKET_AND_METRICS.md",
+    "design_system": "14_DESIGN_SYSTEM_AND_UX_DIRECTION.md",
+    "screen_spec": "15_SCREEN_BY_SCREEN_PRODUCT_SPEC.md",
+    "frontend_component_ownership": "16_FRONTEND_COMPONENT_OWNERSHIP.md",
+    "founder_season_runbook": "17_FOUNDER_SEASON_RUNBOOK.md"
   }
 }

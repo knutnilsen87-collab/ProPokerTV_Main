@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "product": "ProPokerTV",
+  "design_north_star": "The weekly poker clip league",
+  "binding": true,
+  "core_experience": "Active weekly contest first; feed is secondary.",
+  "responsive_breakpoints_required": [360, 768, 1280],
+  "global_ui_states_required": ["loading", "empty", "error", "unauthenticated_where_relevant", "unauthorized_where_relevant"],
+  "frontend_ci_required": true,
+  "priority_screens": ["WeeklyContestPage", "ClipDetailPage", "CreatorProfilePage", "LeaderboardPage", "AdminContestPage", "ModerationQueuePage", "SubmitClipPage"]
+}

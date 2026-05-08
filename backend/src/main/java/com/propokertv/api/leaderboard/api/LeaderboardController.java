@@ -1,6 +1,7 @@
 package com.propokertv.api.leaderboard.api;
 
 import com.propokertv.api.common.api.ApiEnvelope;
+import com.propokertv.api.leaderboard.dto.LeaderboardDtos.CreatorLeaderboardRow;
 import com.propokertv.api.leaderboard.dto.LeaderboardDtos.LeaderboardRow;
 import com.propokertv.api.leaderboard.service.LeaderboardService;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,10 @@ public class LeaderboardController {
     @GetMapping("/top-clips")
     public ApiEnvelope<List<LeaderboardRow>> topClips(@RequestParam(defaultValue = "10") int size) {
         return ApiEnvelope.ok(leaderboardService.topClips(size));
+    }
+
+    @GetMapping("/top-creators")
+    public ApiEnvelope<List<CreatorLeaderboardRow>> topCreators(@RequestParam(defaultValue = "10") int size) {
+        return ApiEnvelope.ok(leaderboardService.topCreators(size));
     }
 }

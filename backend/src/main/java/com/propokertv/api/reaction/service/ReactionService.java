@@ -2,6 +2,7 @@ package com.propokertv.api.reaction.service;
 
 import com.propokertv.api.clip.repo.ClipRepository;
 import com.propokertv.api.common.error.NotFoundException;
+import com.propokertv.api.common.observability.AnalyticsEventService;
 import com.propokertv.api.reaction.domain.Reaction;
 import com.propokertv.api.reaction.domain.ReactionType;
 import com.propokertv.api.reaction.dto.ReactionDtos.ReactRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class ReactionService {
     private final ReactionRepository reactionRepository;
     private final ClipRepository clipRepository;
     private final UserRepository userRepository;
+    private final AnalyticsEventService analyticsEventService;
 
     @Transactional
     public void react(Long userId, String clipSlug, ReactRequest request) {
@@ -31,7 +34,8 @@ public class ReactionService {
         reaction.setClip(clip);
         reaction.setUser(user);
         reaction.setReactionType(request.reactionType());
-        reactionRepository.save(reaction);
+        var saved = reactionRepository.save(reaction);
+        analyticsEventService.track("reaction_created", Map.of("reactionId", saved.getId(), "clipId", clip.getId(), "userId", userId, "reactionType", request.reactionType().name()));
     }
 
     @Transactional

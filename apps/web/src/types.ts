@@ -51,13 +51,52 @@ export type Contest = {
   status: string;
   startsAt: string;
   endsAt: string;
+  finalizedAt: string | null;
+  winnerEntryId: number | null;
+  winnerClipId: number | null;
+  winnerCreatorUserId: number | null;
   entries: ContestEntry[];
+};
+
+export type CreateContestPayload = {
+  title: string;
+  startsAt: string;
+  endsAt: string;
+};
+
+export type Report = {
+  id: number;
+  targetType: string;
+  targetId: number;
+  reporterUserId: number;
+  reason: string;
+  note: string | null;
+  status: string;
+  createdAt: string;
 };
 
 export type LeaderboardRow = {
   subjectId: number;
   label: string;
   score: number;
+};
+
+export type CreatorLeaderboardRow = {
+  userId: number;
+  creatorSlug: string;
+  wins: number;
+  nominations: number;
+  totalContestVotes: number;
+  score: number;
+};
+
+export type CreatorReputation = {
+  wins: number;
+  nominations: number;
+  totalContestVotes: number;
+  rankingPosition: number | null;
+  topCategory: string | null;
+  badges: string[];
 };
 
 export type Profile = {
@@ -75,6 +114,7 @@ export type CreatorProfile = {
   headline: string | null;
   verified: boolean;
   socialLinksJson: string | null;
+  reputation: CreatorReputation;
 };
 
 export type CurrentUser = {

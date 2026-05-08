@@ -4,11 +4,14 @@ import type {
   Clip,
   Comment,
   Contest,
+  CreateContestPayload,
+  CreatorLeaderboardRow,
   CreatorProfile,
   CurrentUser,
   LeaderboardRow,
   Profile,
   ReactionSummary,
+  Report,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
@@ -224,6 +227,38 @@ export async function getContest(): Promise<Contest> {
   return request<Contest>("/api/v1/contests/open");
 }
 
+export async function createContest(tokens: Tokens, payload: CreateContestPayload): Promise<Contest> {
+  return request<Contest>(
+    "/api/v1/contests",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    tokens,
+  );
+}
+
+export async function openContest(tokens: Tokens, contestId: number): Promise<Contest> {
+  return request<Contest>(
+    `/api/v1/contests/${contestId}/open`,
+    {
+      method: "POST",
+    },
+    tokens,
+  );
+}
+
+export async function nominateClip(tokens: Tokens, contestId: number, clipId: number): Promise<Contest> {
+  return request<Contest>(
+    `/api/v1/contests/${contestId}/entries`,
+    {
+      method: "POST",
+      body: JSON.stringify({ clipId }),
+    },
+    tokens,
+  );
+}
+
 export async function vote(tokens: Tokens, contestId: number, entryId: number): Promise<Contest> {
   return request<Contest>(
     `/api/v1/contests/${contestId}/vote`,
@@ -235,8 +270,55 @@ export async function vote(tokens: Tokens, contestId: number, entryId: number): 
   );
 }
 
+export async function getContestHistory(): Promise<Contest[]> {
+  return request<Contest[]>("/api/v1/contests/history");
+}
+
+export async function finalizeContest(tokens: Tokens, contestId: number): Promise<Contest> {
+  return request<Contest>(
+    `/api/v1/contests/${contestId}/finalize`,
+    {
+      method: "POST",
+    },
+    tokens,
+  );
+}
+
+export async function getModerationQueue(tokens: Tokens): Promise<Report[]> {
+  return request<Report[]>("/api/v1/moderation/queue", {}, tokens);
+}
+
+export async function moderateClip(tokens: Tokens, clipId: number, decision: string, reason = ""): Promise<string> {
+  return request<string>(
+    `/api/v1/moderation/clips/${clipId}/decision`,
+    {
+      method: "POST",
+      body: JSON.stringify({ decision, reason }),
+    },
+    tokens,
+  );
+}
+
+export async function reportTarget(
+  tokens: Tokens,
+  payload: { targetType: "CLIP" | "COMMENT"; targetId: number; reason: string; note?: string },
+): Promise<Report> {
+  return request<Report>(
+    "/api/v1/moderation/reports",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    tokens,
+  );
+}
+
 export async function getLeaderboard(): Promise<LeaderboardRow[]> {
   return request<LeaderboardRow[]>("/api/v1/leaderboards/top-clips");
+}
+
+export async function getCreatorLeaderboard(): Promise<CreatorLeaderboardRow[]> {
+  return request<CreatorLeaderboardRow[]>("/api/v1/leaderboards/top-creators");
 }
 
 export async function getMyProfile(tokens: Tokens): Promise<Profile> {

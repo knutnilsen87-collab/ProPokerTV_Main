@@ -106,3 +106,56 @@ Update status bundle when:
 ## Closure rule
 
 Do not claim MVP completion unless `06_ACCEPTANCE_CRITERIA.md` is satisfied or unresolved gaps are explicitly accepted as non-MVP.
+
+## Implementation Update — 2026-05-08
+
+Status moved from static source-of-truth setup to MVP loop implementation.
+
+Implemented:
+
+- Frontend CI workflow for `apps/web`.
+- Contest-first homepage for the Weekly Poker Clip League.
+- Backend contest finalization with winner entry, finalized timestamp, and winner history.
+- Vote hardening: contest must be open/in-window, duplicate votes are denied, entries must belong to the contest.
+- Nomination hardening: only approved public clips can be nominated, duplicate nominations are denied.
+- Creator reputation v0: wins, nominations, total contest votes, ranking position, top category, and badges.
+- Top creators leaderboard.
+- Basic upload/link safety: clip media URLs must be HTTPS or local dev URLs.
+- Moderation/report hardening: reports must target existing clips or comments.
+- Analytics v0 via `PPTV_EVENT` structured log lines for core MVP events.
+- Founder Season runbook.
+
+Verified locally:
+
+- `apps/web` production build passed.
+- Backend compile passed with Maven.
+
+Completed verification:
+
+- Backend integration tests passed with PostgreSQL on `localhost:55436`.
+- Fullstack smoke passed against live backend and frontend services.
+- Demo admin login works with `admin@propokertv.test` / `password`.
+
+Next action:
+
+1. Keep Docker/PostgreSQL available for future backend integration tests.
+2. Continue shrinking legacy page implementations out of `App.tsx`.
+3. Decide signed upload vs link-first launch.
+4. Decide whether admin-triggered finalization is enough for MVP or whether scheduled finalization is required before pilot.
+
+## Design Spec Update — 2026-05-08
+
+Implemented from the design-spec package:
+
+- Added binding design direction docs: `14_DESIGN_SYSTEM_AND_UX_DIRECTION.md`, `15_SCREEN_BY_SCREEN_PRODUCT_SPEC.md`, and `16_FRONTEND_COMPONENT_OWNERSHIP.md`.
+- Added machine-readable `design_spec.json` and `screen_map.json`.
+- Renamed the homepage route implementation to `WeeklyContestPage` via `apps/web/src/pages/WeeklyContestPage.tsx`.
+- Added role-gated `AdminContestPage` at `/admin/contests`.
+- Added role-gated `ModerationQueuePage` at `/admin/moderation`.
+- Updated primary navigation to match MVP scope: Weekly Contest, Clips, Leaderboard, Creators, Upload/Profile, with Admin/Moderation shown only for staff roles.
+- Added clip report action on clip detail.
+
+Verified:
+
+- Frontend production build passed after these changes.
+- Browser smoke passed for Weekly Contest, Admin Contest, Moderation Queue, and Leaderboard routes.

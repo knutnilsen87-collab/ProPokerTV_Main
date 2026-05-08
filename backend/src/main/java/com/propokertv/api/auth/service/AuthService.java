@@ -2,6 +2,7 @@ package com.propokertv.api.auth.service;
 
 import com.propokertv.api.auth.domain.AuthActionTokenType;
 import com.propokertv.api.auth.dto.AuthDtos.*;
+import com.propokertv.api.common.observability.AnalyticsEventService;
 import com.propokertv.api.common.error.ConflictException;
 import com.propokertv.api.common.error.ErrorCode;
 import com.propokertv.api.common.error.NotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final AuthActionTokenService authActionTokenService;
+    private final AnalyticsEventService analyticsEventService;
     private final com.propokertv.api.common.security.AppSecurityProperties securityProperties;
 
     @Transactional
@@ -46,6 +49,7 @@ public class AuthService {
         profileRepository.save(profile);
         authActionTokenService.issue(saved, AuthActionTokenType.EMAIL_VERIFICATION,
                 Duration.ofHours(securityProperties.getEmailVerificationTokenTtlHours()));
+        analyticsEventService.track("creator_signed_up", Map.of("userId", saved.getId(), "role", saved.getRole().name()));
 
         return buildAuthResponse(saved);
     }

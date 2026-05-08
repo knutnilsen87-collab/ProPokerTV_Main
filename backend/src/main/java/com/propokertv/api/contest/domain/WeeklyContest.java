@@ -26,4 +26,11 @@ public class WeeklyContest extends AuditableEntity {
 
     @Column(name = "ends_at", nullable = false)
     private Instant endsAt;
+
+    @ManyToOne
+    @JoinColumn(name = "winner_entry_id")
+    private WeeklyContestEntry winnerEntry;
+
+    @Column(name = "finalized_at")
+    private Instant finalizedAt;
 }

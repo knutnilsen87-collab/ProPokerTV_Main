@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "screens": [
+    {"id": "weekly_contest_home", "route_hint": "/", "page_component": "WeeklyContestPage"},
+    {"id": "clip_detail", "route_hint": "/clips/:slug", "page_component": "ClipDetailPage"},
+    {"id": "creator_profile", "route_hint": "/creators/:slug", "page_component": "CreatorProfilePage"},
+    {"id": "leaderboard", "route_hint": "/leaderboard", "page_component": "LeaderboardPage"},
+    {"id": "admin_contest", "route_hint": "/admin/contests", "page_component": "AdminContestPage"},
+    {"id": "moderation_queue", "route_hint": "/admin/moderation", "page_component": "ModerationQueuePage"}
+  ]
+}

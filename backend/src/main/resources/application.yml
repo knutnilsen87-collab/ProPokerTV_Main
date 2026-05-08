@@ -40,8 +40,8 @@ app:
     refresh-token-ttl-days: ${JWT_REFRESH_TOKEN_TTL_DAYS:30}
     password-reset-token-ttl-minutes: ${JWT_PASSWORD_RESET_TOKEN_TTL_MINUTES:30}
     email-verification-token-ttl-hours: ${JWT_EMAIL_VERIFICATION_TOKEN_TTL_HOURS:24}
-    secret: ${JWT_SECRET:change-me}
-    cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+    secret: ${JWT_SECRET:local-development-secret-change-me-before-production-1234567890}
+    cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173}
   storage:
     provider: ${STORAGE_PROVIDER:local}
     local-root: ${LOCAL_STORAGE_ROOT:./var/storage}

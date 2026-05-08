@@ -10,5 +10,16 @@ public class ContestDtos {
     public record NominateClipRequest(@NotNull Long clipId) {}
     public record VoteRequest(@NotNull Long entryId) {}
     public record ContestEntryResponse(Long entryId, Long clipId, long votes) {}
-    public record ContestResponse(Long id, String title, String status, Instant startsAt, Instant endsAt, List<ContestEntryResponse> entries) {}
+    public record ContestResponse(
+            Long id,
+            String title,
+            String status,
+            Instant startsAt,
+            Instant endsAt,
+            Instant finalizedAt,
+            Long winnerEntryId,
+            Long winnerClipId,
+            Long winnerCreatorUserId,
+            List<ContestEntryResponse> entries
+    ) {}
 }

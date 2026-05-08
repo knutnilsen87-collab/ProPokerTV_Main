@@ -1,6 +1,9 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "./state/auth";
+import { WeeklyContestPage } from "./pages/WeeklyContestPage";
+import { AdminContestPage } from "./pages/AdminContestPage";
+import { ModerationQueuePage } from "./pages/ModerationQueuePage";
 import * as api from "./lib/api";
 import type {
   Clip,
@@ -8,6 +11,7 @@ import type {
   Contest,
   CreatorProfile,
   LeaderboardRow,
+  CreatorLeaderboardRow,
   Profile,
   ReactionSummary,
 } from "./types";
@@ -34,6 +38,7 @@ function cx(...parts: Array<string | false | null | undefined>) {
 
 function AppShell({ children }: { children: React.ReactNode }) {
   const { currentUser, signOut } = useAuth();
+  const canManage = currentUser?.role === "ADMIN" || currentUser?.role === "MODERATOR";
 
   return (
     <div className="app-shell">
@@ -47,10 +52,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="main-nav">
-          <NavLink to="/">Home</NavLink>
+          <NavLink to="/">Weekly Contest</NavLink>
+          <NavLink to="/clips">Clips</NavLink>
           <NavLink to="/leaderboard">Leaderboard</NavLink>
-          <NavLink to="/play-of-the-week">Play of the Week</NavLink>
+          <NavLink to="/creators/acecreator">Creators</NavLink>
           <NavLink to="/upload">Upload</NavLink>
+          {canManage ? <NavLink to="/admin/contests">Admin</NavLink> : null}
+          {canManage ? <NavLink to="/admin/moderation">Moderation</NavLink> : null}
           {currentUser ? <NavLink to="/settings/profile">Profile</NavLink> : <NavLink to="/login">Sign in</NavLink>}
         </nav>
 
@@ -269,6 +277,7 @@ function ClipDetailPage() {
   const [reactions, setReactions] = useState<ReactionSummary[]>([]);
   const [commentBody, setCommentBody] = useState("");
   const [commentError, setCommentError] = useState<string | null>(null);
+  const [reportMessage, setReportMessage] = useState<string | null>(null);
   const [pageError, setPageError] = useState<string | null>(null);
 
   const load = async () => {
@@ -332,6 +341,20 @@ function ClipDetailPage() {
     }
   };
 
+  const reportClip = async () => {
+    if (!clip) return;
+    try {
+      await api.withRefresh(
+        (auth) => api.reportTarget(auth, { targetType: "CLIP", targetId: clip.id, reason: "Brand safety review", note: "User requested moderation review." }),
+        tokens,
+        setTokens,
+      );
+      setReportMessage("Report sent to moderation.");
+    } catch (error) {
+      setPageError(error instanceof Error ? error.message : "Failed to report clip.");
+    }
+  };
+
   if (pageError) {
     return <div className="error-banner">{pageError}</div>;
   }
@@ -372,6 +395,12 @@ function ClipDetailPage() {
                 <strong>{reaction.count}</strong>
               </button>
             ))}
+          </div>
+          <div className="card-actions">
+            <button className="button secondary" disabled={!currentUser} onClick={reportClip}>
+              Report clip
+            </button>
+            {reportMessage ? <span className="success-chip">{reportMessage}</span> : null}
           </div>
         </div>
       </section>
@@ -447,8 +476,10 @@ function ClipDetailPage() {
 
 function LeaderboardPage() {
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
+  const [creators, setCreators] = useState<CreatorLeaderboardRow[]>([]);
   useEffect(() => {
     void api.getLeaderboard().then(setRows).catch(() => setRows([]));
+    void api.getCreatorLeaderboard().then(setCreators).catch(() => setCreators([]));
   }, []);
 
   return (
@@ -468,6 +499,25 @@ function LeaderboardPage() {
                 <small>Clip #{row.subjectId}</small>
               </div>
               <span>{row.score.toLocaleString("nb-NO")} score</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <SectionTitle
+        eyebrow="Creators"
+        title="Creator reputation"
+        body="Wins, nominations, and votes rolled into durable creator status."
+      />
+      <div className="panel">
+        <ol className="leaderboard-board">
+          {creators.map((row, index) => (
+            <li key={row.userId} className={cx(index === 0 && "winner-row")}>
+              <span className="rank-index">#{index + 1}</span>
+              <div>
+                <strong>@{row.creatorSlug}</strong>
+                <small>{row.nominations} nominations</small>
+              </div>
+              <span>{row.wins} win(s) · {row.totalContestVotes} votes</span>
             </li>
           ))}
         </ol>
@@ -601,7 +651,23 @@ function CreatorPage() {
                   <span>{creator.verified ? "Verified creator" : "Creator"}</span>
                   <span>User #{creator.userId}</span>
                 </div>
+                <div className="reputation-row">
+                  <span>{creator.reputation.wins} win(s)</span>
+                  <span>{creator.reputation.nominations} nomination(s)</span>
+                  <span>{creator.reputation.totalContestVotes} vote(s)</span>
+                  {creator.reputation.rankingPosition ? <span>Rank #{creator.reputation.rankingPosition}</span> : null}
+                </div>
               </div>
+            </div>
+          </section>
+          <section className="panel">
+            <SectionTitle eyebrow="Reputation" title="Badges" body="Contest history creates visible status for creators." />
+            <div className="badge-row">
+              {creator.reputation.badges.length ? (
+                creator.reputation.badges.map((badge) => <span className="success-chip" key={badge}>{badge}</span>)
+              ) : (
+                <span className="signed-in-chip">No badges yet</span>
+              )}
             </div>
           </section>
           <section className="panel">
@@ -933,7 +999,9 @@ export function App() {
         </div>
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<WeeklyContestPage />} />
+          <Route path="/clips" element={<HomePage />} />
+          <Route path="/legacy-home" element={<HomePage />} />
           <Route path="/clips/:slug" element={<ClipDetailPage />} />
           <Route path="/creators/:slug" element={<CreatorPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
@@ -942,6 +1010,8 @@ export function App() {
           <Route path="/register" element={<AuthPage mode="register" />} />
           <Route path="/settings/profile" element={<ProfileSettingsPage />} />
           <Route path="/upload" element={<UploadPage />} />
+          <Route path="/admin/contests" element={<AdminContestPage />} />
+          <Route path="/admin/moderation" element={<ModerationQueuePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
