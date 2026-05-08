@@ -9,6 +9,11 @@ $MavenRepo = Join-Path $ToolsRoot "m2"
 $HealthUrl = "http://localhost:8080/actuator/health"
 $SwaggerUrl = "http://localhost:8080/swagger-ui/index.html"
 $WebUrl = "http://localhost:5173"
+$ContestUrl = "$WebUrl/"
+$ClipsUrl = "$WebUrl/clips"
+$LeaderboardUrl = "$WebUrl/leaderboard"
+$AdminContestUrl = "$WebUrl/admin/contests"
+$ModerationUrl = "$WebUrl/admin/moderation"
 
 function Write-Step($Message) {
   Write-Host ""
@@ -149,13 +154,17 @@ try {
 Start-Backend
 Start-Frontend
 
-Write-Step "Opening app"
-Start-Process $WebUrl | Out-Null
+Write-Step "Opening weekly contest"
+Start-Process $ContestUrl | Out-Null
 
 Write-Host ""
 Write-Host "ProPokerTV is running." -ForegroundColor Green
-Write-Host "App:     $WebUrl"
-Write-Host "API:     $HealthUrl"
-Write-Host "Swagger: $SwaggerUrl"
+Write-Host "Weekly Contest:  $ContestUrl"
+Write-Host "Clips:           $ClipsUrl"
+Write-Host "Leaderboard:     $LeaderboardUrl"
+Write-Host "Admin Contests:  $AdminContestUrl"
+Write-Host "Moderation:      $ModerationUrl"
+Write-Host "API:             $HealthUrl"
+Write-Host "Swagger:         $SwaggerUrl"
 Write-Host ""
 Write-Host "Close the backend/frontend terminal windows to stop the app processes."
