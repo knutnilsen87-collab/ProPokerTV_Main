@@ -159,3 +159,26 @@ Verified:
 
 - Frontend production build passed after these changes.
 - Browser smoke passed for Weekly Contest, Admin Contest, Moderation Queue, and Leaderboard routes.
+
+## Premium Visual Direction Update — 2026-05-09
+
+Locked visual direction:
+
+- `Midnight Gold Editorial League`
+- Deep midnight/black background, restrained gold accents, warm off-white text.
+- Editorial serif display typography for hero and major headings.
+- Clean sans-serif body/navigation with uppercase nav treatment.
+- Weekly Poker Clip League remains the primary wedge.
+
+Updated product requirement:
+
+- Homepage must show active contest, nominee clips, current leader, votes/time-left, rankings preview, and creator status.
+- No user-facing debug/developer banners.
+- Broken images must render a premium fallback, never the browser broken-image icon.
+- Do not drift into static VIP-club, livestreaming, masterclass, casino, or betting language.
+
+Validation target:
+
+- `npm run build`
+- Desktop and mobile homepage smoke
+- Missing image state check

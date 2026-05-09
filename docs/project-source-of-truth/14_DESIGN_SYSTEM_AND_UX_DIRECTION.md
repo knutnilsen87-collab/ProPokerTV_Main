@@ -134,17 +134,76 @@ Every API-backed screen must define:
 
 ## Visual direction
 
-Use a clean sports-media visual language:
+ProPokerTV must feel like a premium poker media league, not a generic dark web app.
 
-- dark or high-contrast media-first surfaces are acceptable,
-- strong hero section for active contest,
-- card-based clip layout,
-- clear primary CTA,
-- badges as compact status tokens,
-- leaderboard rows with rank emphasis,
-- minimal clutter around video/clip cards.
+The approved visual direction is:
 
-Avoid visual noise. ProPokerTV should feel competitive and credible, not gimmicky.
+> Midnight Gold Editorial League
+
+It combines:
+
+- black/private-club atmosphere,
+- editorial luxury typography,
+- restrained gold accents,
+- cinematic poker media surfaces,
+- league/ranking/status mechanics.
+
+The app should feel premium, calm, and exclusive, while remaining active enough to support voting, contests, and creator reputation.
+
+Base visual tokens:
+
+```css
+:root {
+  --pptv-bg: #03070c;
+  --pptv-bg-soft: #060b12;
+  --pptv-surface: #0b1118;
+  --pptv-surface-elevated: #101821;
+
+  --pptv-gold: #d6af5f;
+  --pptv-gold-soft: #ead08a;
+  --pptv-gold-dark: #9c7834;
+
+  --pptv-text: #f4eee2;
+  --pptv-text-muted: #9da8b7;
+  --pptv-text-subtle: #6f7a87;
+
+  --pptv-border: rgba(214, 175, 95, 0.18);
+  --pptv-border-soft: rgba(255, 255, 255, 0.08);
+}
+```
+
+Typography direction:
+
+```css
+--font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+--font-body: Inter, ui-sans-serif, system-ui, sans-serif;
+```
+
+Hero and major headings use editorial display typography:
+
+```css
+font-family: var(--font-display);
+font-size: clamp(3.8rem, 7vw, 7.5rem);
+font-weight: 500;
+letter-spacing: 0.02em;
+line-height: 0.95;
+text-transform: uppercase;
+color: var(--pptv-gold);
+```
+
+Nav and body use clean sans-serif. Navigation labels may use `letter-spacing: 0.12em` and uppercase treatment.
+
+Homepage must not become a static luxury landing page. It must show product proof:
+
+- active contest,
+- nominee clips,
+- current leader,
+- votes,
+- time left,
+- rankings,
+- creator status.
+
+Avoid bright casino red/green, overfilled gold decoration, betting-adjacent visual language, and unreleased VIP/livestream/masterclass concepts.
 
 ## UX copy rules
 
@@ -169,10 +228,13 @@ Bad:
 
 MVP navigation should stay small:
 
-- Home / Weekly Contest
+- Home/League
 - Clips
-- Leaderboard
+- Rankings
 - Creators
+- Upload
+- Sign in
+- Join the League
 - Profile
 - Admin or Moderator, only for authorized users
 
@@ -194,3 +256,17 @@ Do not add broad navigation for future ecosystem features until they are real.
 - Shared components must be genuinely shared and small.
 - Do not create vague folders such as `misc`, `helpers`, `new`, `v2`, `temp`, or `final`.
 - Business logic for contest/reputation must not be hardcoded in frontend if it belongs to backend/domain contracts.
+
+## Premium Visual DoD
+
+A frontend feature is not done unless:
+
+- It matches the Midnight Gold Editorial League direction.
+- It feels premium before any interaction.
+- It avoids generic SaaS visual language.
+- It avoids casino/betting visual language.
+- It uses gold as restrained accent, not decoration everywhere.
+- Major headings use editorial display typography.
+- Product surfaces still show real league mechanics: contest, votes, ranking, creator status.
+- No debug banners or broken image icons are visible.
+- Mobile layout preserves premium spacing and hierarchy.

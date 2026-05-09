@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import * as api from "../lib/api";
+import { PremiumImage } from "../components/PremiumImage";
 import { useAuth } from "../state/auth";
 import type { Clip, Contest, CreatorLeaderboardRow, LeaderboardRow } from "../types";
 
@@ -22,6 +23,14 @@ function formatDuration(seconds?: number | null) {
 
 function scoreLabel(votes: number) {
   return votes === 1 ? "1 vote" : `${votes.toLocaleString("nb-NO")} votes`;
+}
+
+function timeLeftLabel(iso: string) {
+  const ms = new Date(iso).getTime() - Date.now();
+  if (ms <= 0) return "Closing soon";
+  const hours = Math.ceil(ms / 36e5);
+  if (hours < 48) return `${hours}h left`;
+  return `${Math.ceil(hours / 24)} days left`;
 }
 
 export function HomeContestPage() {
@@ -65,6 +74,10 @@ export function HomeContestPage() {
     return contest?.entries.slice().sort((a, b) => b.votes - a.votes)[0] ?? null;
   }, [contest]);
 
+  const totalVotes = useMemo(() => {
+    return contest?.entries.reduce((sum, entry) => sum + entry.votes, 0) ?? 0;
+  }, [contest]);
+
   const handleVote = async (entryId: number) => {
     if (!contest) return;
     try {
@@ -80,19 +93,23 @@ export function HomeContestPage() {
 
   return (
     <div className="stack-xl">
-      <section className="contest-hero">
+      <section className="contest-hero editorial-league-hero">
         <div className="contest-hero__copy">
-          <span className="eyebrow">Weekly Poker Clip League</span>
-          <h1>Vote for this week's best poker clip.</h1>
+          <span className="eyebrow">ProPokerTV Weekly League</span>
+          <h1>
+            <span>This week's</span>
+            <span>best poker</span>
+            <span>moment.</span>
+          </h1>
           <p>
-            Creators post the hands. Fans decide the winner. Wins, nominations, and votes become creator status.
+            Creators post the highlights. Fans vote for the winners. Rankings, badges, and weekly wins build poker status.
           </p>
           <div className="hero-actions">
             <Link className="button primary" to={currentUser ? "/upload" : "/register"}>
-              {currentUser ? "Submit a clip" : "Join and vote"}
+              {currentUser ? "Submit a clip" : "Vote now"}
             </Link>
             <Link className="button secondary" to="/leaderboard">
-              View rankings
+              See rankings
             </Link>
           </div>
         </div>
@@ -101,11 +118,15 @@ export function HomeContestPage() {
           {contest ? (
             <>
               <div className="meta-row">
+                <span>Live now</span>
                 <span>{contest.status}</span>
-                <span>{formatDate(contest.startsAt)} - {formatDate(contest.endsAt)}</span>
               </div>
-              <h2>{contest.title}</h2>
-              <p>{contest.entries.length} nominated clip(s)</p>
+              <h2>{contest.title || "Play of the Week #1"}</h2>
+              <div className="league-stat-grid">
+                <span><strong>{contest.entries.length}</strong> nominated clips</span>
+                <span><strong>{totalVotes}</strong> votes</span>
+                <span><strong>{timeLeftLabel(contest.endsAt)}</strong> closes {formatDate(contest.endsAt)}</span>
+              </div>
               {leadingEntry ? (
                 <div className="leader-callout">
                   <span>Current leader</span>
@@ -116,7 +137,7 @@ export function HomeContestPage() {
             </>
           ) : (
             <div className="empty-card compact">
-              <p>{error ?? "No active contest yet."}</p>
+              <p>{error ?? "Next weekly contest opens soon. Submit a clip to be considered."}</p>
             </div>
           )}
         </div>
@@ -127,7 +148,7 @@ export function HomeContestPage() {
 
       <section className="stack-md">
         <div className="section-title">
-          <span>Vote now</span>
+          <span>Nominated clips</span>
           <h2>This week's nominees</h2>
           <p>One vote per user. Finalized contests lock the result into winner history.</p>
         </div>
@@ -138,7 +159,7 @@ export function HomeContestPage() {
               return (
                 <article key={entry.entryId} className="nominee-card panel">
                   <div className="clip-thumb">
-                    {clip?.thumbnailUrl ? <img src={clip.thumbnailUrl} alt={clip.title} /> : <div className="thumb-fallback">PPTV</div>}
+                    <PremiumImage src={clip?.thumbnailUrl} alt={clip?.title ?? `Clip #${entry.clipId}`} fallbackLabel="PPTV" />
                     <span className="duration-badge">{formatDuration(clip?.durationSeconds)}</span>
                   </div>
                   <div className="meta-row">
@@ -158,7 +179,7 @@ export function HomeContestPage() {
             })
           ) : (
             <div className="empty-card">
-              <p>No nominees are available yet.</p>
+              <p>No clips nominated yet. Admins can nominate approved clips.</p>
             </div>
           )}
         </div>
@@ -167,8 +188,8 @@ export function HomeContestPage() {
       <section className="three-up-grid">
         <div className="panel">
           <div className="section-title">
-            <span>Clips</span>
-            <h2>Top clips</h2>
+            <span>Weekly ranking</span>
+            <h2>Leaderboard preview</h2>
             <p>Approved clips ranked by current score.</p>
           </div>
           <ol className="leaderboard-list">
@@ -201,8 +222,8 @@ export function HomeContestPage() {
 
         <div className="panel">
           <div className="section-title">
-            <span>History</span>
-            <h2>Recent winners</h2>
+            <span>Hall of Fame</span>
+            <h2>Past winners</h2>
             <p>Finalized contests create durable status.</p>
           </div>
           <ol className="leaderboard-list">

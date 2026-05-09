@@ -1,9 +1,9 @@
 {
   "project": "ProPokerTV",
   "bundle_version": 1,
-  "updated_at": "2026-05-08",
-  "phase": "MVP loop implemented and verified locally",
-  "current_goal": "Prepare the Weekly Poker Clip League MVP for pilot hardening.",
+  "updated_at": "2026-05-09",
+  "phase": "premium_visual_direction_implementation",
+  "current_goal": "Lock Midnight Gold Editorial League while preserving the Weekly Poker Clip League product loop.",
   "facts": [
     "signup_login_refresh_skeleton",
     "current_user_endpoint",
@@ -29,7 +29,11 @@
     "frontend_component_ownership_docs",
     "admin_contest_page",
     "moderation_queue_page",
-    "clip_report_action"
+    "clip_report_action",
+    "New reference screenshot has a much stronger premium feel than the previous localhost app.",
+    "Colors, typography and restraint are directionally better.",
+    "The approved visual direction is Midnight Gold Editorial League.",
+    "The homepage must remain product-led with active contest, nominees, votes, time left, rankings, and creator status."
   ],
   "assumptions": [
     "Current repo runs locally as documented.",
@@ -38,7 +42,8 @@
   ],
   "ambiguity_flags": [
     "Scheduled finalization and signed uploads remain explicit follow-up decisions.",
-    "Legacy App.tsx still contains several page implementations and should continue shrinking."
+    "Legacy App.tsx still contains several page implementations and should continue shrinking.",
+    "Premium visuals must not drift into a static VIP-club landing page or gambling-adjacent visual language."
   ],
   "verification_state": {
     "status": "verified_local",
@@ -80,17 +85,20 @@
     "MVP wedge is Weekly Poker Clip League.",
     "ProPokerTV remains non-gambling.",
     "Use existing backend modular monolith; do not create parallel domain models.",
-    "Contest/reputation loop is priority over marketplace/AI/mobile."
+    "Contest/reputation loop is priority over marketplace/AI/mobile.",
+    "Adopt Midnight Gold Editorial League as the visual direction.",
+    "Use deep midnight/black background, restrained gold accents and editorial serif display typography.",
+    "Preserve Weekly Poker Clip League as the product wedge."
   ],
-  "recommended_next_action": "Continue frontend decomposition, then decide signed upload vs link-first launch.",
-  "fallback_action": "Keep admin-triggered finalization and link-first clips for founder pilot if scheduled jobs or signed uploads are not required.",
+  "recommended_next_action": "Continue applying Midnight Gold Editorial League across remaining frontend routes while preserving active contest/voting/ranking content.",
+  "fallback_action": "If implementation narrows, patch homepage tokens, nav, hero and nominee cards first.",
   "stop_path_signal": "Do not claim public beta readiness until upload/link safety and production secret/CORS setup are explicitly accepted.",
   "restart_layer": "docs/project-source-of-truth/00_START_HERE.md",
   "execution_contract": {
     "next_action_type": "code_patch",
-    "next_action_target": "frontend decomposition and upload/storage decision",
-    "next_action_instruction": "Move remaining route-level pages out of App.tsx and document launch choice for clip submission.",
-    "success_condition_for_next_action": "App.tsx contains shell/routes only and clip submission launch path is explicit.",
+    "next_action_target": "remaining frontend surfaces",
+    "next_action_instruction": "Apply Midnight Gold Editorial League consistently and keep contest mechanics visible.",
+    "success_condition_for_next_action": "No generic SaaS/debug surfaces remain and homepage shows contest, nominees, votes, rankings, and creator status.",
     "verification_for_next_action": "npm run build and focused browser smoke."
   },
   "causal_bridge": "Frontend CI prevents false green before product-facing contest homepage and reputation work.",
@@ -101,13 +109,13 @@
     ]
   },
   "repo_health": {
-    "status": "mvp_loop_implemented_pending_db_test",
+    "status": "improved_premium_direction",
     "structure_fit": "Docs live under docs/project-source-of-truth without changing runtime code.",
     "ownership_fit": "Docs define module ownership and prevent broad template dump.",
     "duplication_risk": "Low if this folder becomes canonical and older reference material remains reference-only.",
     "boundary_violation_risk": "Low for docs; medium for upcoming implementation if contest/reputation boundaries are ignored.",
     "temporary_mess_introduced": false,
-    "cleanup_performed": "Implemented frontend CI, contest-first homepage, finalization, winner history, creator reputation, analytics v0, founder runbook, design docs, admin contest screen, moderation queue screen, and clip reporting.",
+    "cleanup_performed": "Implemented frontend CI, contest-first homepage, finalization, winner history, creator reputation, analytics v0, founder runbook, design docs, admin contest screen, moderation queue screen, clip reporting, social login, and premium visual direction.",
     "follow_up_required": true
   }
 }

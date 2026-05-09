@@ -1,9 +1,10 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, NavLink, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "./state/auth";
 import { WeeklyContestPage } from "./pages/WeeklyContestPage";
 import { AdminContestPage } from "./pages/AdminContestPage";
 import { ModerationQueuePage } from "./pages/ModerationQueuePage";
+import { PremiumImage } from "./components/PremiumImage";
 import * as api from "./lib/api";
 import type {
   Clip,
@@ -77,9 +78,9 @@ function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="main-nav">
-          <NavLink to="/">Weekly Contest</NavLink>
+          <NavLink to="/">Home/League</NavLink>
           <NavLink to="/clips">Clips</NavLink>
-          <NavLink to="/leaderboard">Leaderboard</NavLink>
+          <NavLink to="/leaderboard">Rankings</NavLink>
           <NavLink to="/creators/acecreator">Creators</NavLink>
           <NavLink to="/upload">Upload</NavLink>
           {canManage ? <NavLink to="/admin/contests">Admin</NavLink> : null}
@@ -100,7 +101,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
             </>
           ) : (
             <Link className="button primary" to="/register">
-              Create account
+              Join the League
             </Link>
           )}
         </div>
@@ -125,7 +126,7 @@ function ClipCard({ clip, featured = false }: { clip: Clip; featured?: boolean }
   return (
     <article className={cx("clip-card", featured && "clip-card--featured")}>
       <div className="clip-thumb">
-        {clip.thumbnailUrl ? <img src={clip.thumbnailUrl} alt={clip.title} /> : <div className="thumb-fallback">♠</div>}
+        <PremiumImage src={clip.thumbnailUrl} alt={clip.title} fallbackLabel="PPTV" />
         <span className="duration-badge">{formatDuration(clip.durationSeconds)}</span>
       </div>
       <div className="clip-body">
@@ -182,10 +183,7 @@ function HomePage() {
         <div className="hero-copy">
           <span className="eyebrow">Poker-first premium media</span>
           <h1>Editorial drama up top. Product clarity underneath.</h1>
-          <p>
-            Built directly from the frontend handoff: hero clip, Play of the Week, trending lanes, creator spotlight,
-            and a product shell that feels expensive without turning into casino noise.
-          </p>
+          <p>Premium poker media with weekly contests, ranked clips, creator status, and a calm league rhythm.</p>
           <div className="hero-actions">
             <Link className="button primary" to="/register">
               Join the table
@@ -284,7 +282,7 @@ function HomePage() {
         <SectionTitle
           eyebrow="Trending lane"
           title="Latest uploads"
-          body="Quiet repeatable cards below the hero, as specified in the handoff."
+          body="Compact media cards for scanning approved clips without losing the league context."
         />
         <div className="clips-grid">
           {rest.length ? rest.map((clip) => <ClipCard clip={clip} key={clip.id} />) : featured ? null : <p>No clips yet.</p>}
@@ -395,7 +393,7 @@ function ClipDetailPage() {
           {clip.playbackUrl ? (
             <video controls poster={clip.thumbnailUrl ?? undefined} src={clip.playbackUrl} />
           ) : clip.thumbnailUrl ? (
-            <img src={clip.thumbnailUrl} alt={clip.title} />
+            <PremiumImage src={clip.thumbnailUrl} alt={clip.title} fallbackLabel="PPTV" />
           ) : (
             <div className="thumb-fallback large">♠</div>
           )}
@@ -594,10 +592,7 @@ function ContestPage() {
         <div className="hero-copy">
           <span className="eyebrow">Weekly ritual</span>
           <h1>Play of the Week</h1>
-          <p>
-            The handoff asked for ritual and urgency. This page keeps the event feel slightly more dramatic than the feed
-            while preserving clarity and trust.
-          </p>
+          <p>Weekly voting gives creators a repeatable reason to post and fans a clear reason to return.</p>
         </div>
         <div className="panel">
           {contest ? (
@@ -846,10 +841,7 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
       <section className="panel auth-copy">
         <span className="eyebrow">{mode === "login" ? "Return to the table" : "Registration flow"}</span>
         <h1>{mode === "login" ? "Sign in" : "Create account"}</h1>
-        <p>
-          The handoff says registration should bring the user back to their first meaningful action quickly. This form
-          feeds straight into the backend auth flow that now supports refresh, forgot password, reset, and email verification.
-        </p>
+        <p>Create an account to vote, upload clips, build creator reputation, and return to the weekly league without friction.</p>
         <div className="demo-accounts">
           {api.DEMO_ACCOUNTS.map((account) => (
             <button
@@ -959,7 +951,7 @@ function ProfileSettingsPage() {
 
   return (
     <div className="stack-lg">
-      <SectionTitle eyebrow="Settings" title="My profile" body="Profile flow from the handoff: visible labels, strong focus states, concise errors." />
+      <SectionTitle eyebrow="Settings" title="My profile" body="Keep identity, profile copy, and media surfaces ready for the league." />
       <div className="settings-grid">
         <form className="panel stack-sm" onSubmit={submit}>
           <label>
@@ -991,7 +983,7 @@ function ProfileSettingsPage() {
           <div className="creator-banner" style={{ backgroundImage: form.bannerUrl ? `url(${form.bannerUrl})` : undefined }} />
           <div className="creator-profile-row">
             <div className="avatar-orb">
-              {form.avatarUrl ? <img src={form.avatarUrl} alt={form.displayName} /> : form.displayName.slice(0, 2).toUpperCase()}
+              {form.avatarUrl ? <PremiumImage src={form.avatarUrl} alt={form.displayName} fallbackLabel={form.displayName.slice(0, 2).toUpperCase()} /> : form.displayName.slice(0, 2).toUpperCase()}
             </div>
             <div>
               <h3>{form.displayName || "Display name"}</h3>
@@ -1051,7 +1043,7 @@ function UploadPage() {
       <SectionTitle
         eyebrow="Upload flow"
         title="Create a clip"
-        body="This is the MVP upload experience from the handoff: metadata first, moderation after submit."
+        body="Submit clip metadata first. Moderation reviews the clip before it can enter public league surfaces."
       />
       <div className="settings-grid">
         <form className="panel stack-sm" onSubmit={submit}>
@@ -1100,7 +1092,7 @@ function UploadPage() {
 
         <div className="panel">
           <h3>Upload state</h3>
-          <p>After submit, backend sets moderation to `PENDING_REVIEW`. That matches the handoff: creator submits, waits, and returns later for outcome.</p>
+          <p>After submit, backend sets moderation to `PENDING_REVIEW`. Creators can return later after review.</p>
           {created ? (
             <div className="success-stack">
               <div className="success-chip">Clip created: {created.title}</div>
@@ -1119,7 +1111,7 @@ function NotFoundPage() {
   return (
     <div className="empty-card">
       <h2>Route not found</h2>
-      <p>This frontend follows the handoff information architecture, but this specific route is not implemented yet.</p>
+      <p>This route is not implemented yet.</p>
       <Link className="button secondary" to="/">
         Back home
       </Link>
@@ -1129,7 +1121,6 @@ function NotFoundPage() {
 
 export function App() {
   const { loading, authError } = useAuth();
-  const apiBase = useMemo(() => api.getApiBase(), []);
 
   if (loading) {
     return <div className="boot-screen">Booting ProPokerTV…</div>;
@@ -1138,11 +1129,7 @@ export function App() {
   return (
     <AppShell>
       <div className="stack-md">
-        <div className="status-strip">
-          <span>Frontend built from the handoff pack</span>
-          <span>API: {apiBase}</span>
-          {authError ? <span className="warning-copy">{authError}</span> : null}
-        </div>
+        {authError ? <div className="error-banner">{authError}</div> : null}
 
         <Routes>
           <Route path="/" element={<WeeklyContestPage />} />

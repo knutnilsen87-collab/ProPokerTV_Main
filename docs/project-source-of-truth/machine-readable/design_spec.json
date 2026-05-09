@@ -2,8 +2,38 @@
   "version": "1.0",
   "product": "ProPokerTV",
   "design_north_star": "The weekly poker clip league",
+  "visual_direction": "Midnight Gold Editorial League",
   "binding": true,
   "core_experience": "Active weekly contest first; feed is secondary.",
+  "visual_tokens": {
+    "pptv_bg": "#03070c",
+    "pptv_bg_soft": "#060b12",
+    "pptv_surface": "#0b1118",
+    "pptv_surface_elevated": "#101821",
+    "pptv_gold": "#d6af5f",
+    "pptv_gold_soft": "#ead08a",
+    "pptv_gold_dark": "#9c7834",
+    "pptv_text": "#f4eee2",
+    "pptv_text_muted": "#9da8b7",
+    "pptv_text_subtle": "#6f7a87",
+    "pptv_border": "rgba(214, 175, 95, 0.18)",
+    "pptv_border_soft": "rgba(255, 255, 255, 0.08)"
+  },
+  "font_direction": {
+    "display": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+    "body": "Inter, ui-sans-serif, system-ui, sans-serif"
+  },
+  "premium_visual_dod": [
+    "Matches Midnight Gold Editorial League.",
+    "Feels premium before any interaction.",
+    "Avoids generic SaaS visual language.",
+    "Avoids casino/betting visual language.",
+    "Uses gold as restrained accent.",
+    "Major headings use editorial display typography.",
+    "Product surfaces show contest, votes, ranking and creator status.",
+    "No debug banners or broken image icons are visible.",
+    "Mobile layout preserves premium spacing and hierarchy."
+  ],
   "responsive_breakpoints_required": [360, 768, 1280],
   "global_ui_states_required": ["loading", "empty", "error", "unauthenticated_where_relevant", "unauthorized_where_relevant"],
   "frontend_ci_required": true,
