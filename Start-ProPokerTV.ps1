@@ -15,6 +15,26 @@ $LeaderboardUrl = "$WebUrl/leaderboard"
 $AdminContestUrl = "$WebUrl/admin/contests"
 $ModerationUrl = "$WebUrl/admin/moderation"
 
+function Sync-SocialAuthEnvironment {
+  if (-not $env:VITE_GOOGLE_CLIENT_ID -and $env:GOOGLE_OAUTH_CLIENT_ID) {
+    $env:VITE_GOOGLE_CLIENT_ID = $env:GOOGLE_OAUTH_CLIENT_ID
+  }
+  if (-not $env:GOOGLE_OAUTH_CLIENT_ID -and $env:VITE_GOOGLE_CLIENT_ID) {
+    $env:GOOGLE_OAUTH_CLIENT_ID = $env:VITE_GOOGLE_CLIENT_ID
+  }
+
+  if (-not $env:VITE_MICROSOFT_CLIENT_ID -and $env:MICROSOFT_OAUTH_CLIENT_ID) {
+    $env:VITE_MICROSOFT_CLIENT_ID = $env:MICROSOFT_OAUTH_CLIENT_ID
+  }
+  if (-not $env:MICROSOFT_OAUTH_CLIENT_ID -and $env:VITE_MICROSOFT_CLIENT_ID) {
+    $env:MICROSOFT_OAUTH_CLIENT_ID = $env:VITE_MICROSOFT_CLIENT_ID
+  }
+
+  if (-not $env:VITE_MICROSOFT_TENANT_ID -and $env:MICROSOFT_OAUTH_TENANT_ID) {
+    $env:VITE_MICROSOFT_TENANT_ID = $env:MICROSOFT_OAUTH_TENANT_ID
+  }
+}
+
 function Write-Step($Message) {
   Write-Host ""
   Write-Host "==> $Message" -ForegroundColor Cyan
@@ -141,6 +161,8 @@ if (-not (Test-Path $WebRoot)) {
 
 Write-Host "Starting ProPokerTV from $RepoRoot" -ForegroundColor White
 
+Sync-SocialAuthEnvironment
+
 Start-DockerDesktopIfNeeded
 
 Write-Step "Starting PostgreSQL"
@@ -166,5 +188,9 @@ Write-Host "Admin Contests:  $AdminContestUrl"
 Write-Host "Moderation:      $ModerationUrl"
 Write-Host "API:             $HealthUrl"
 Write-Host "Swagger:         $SwaggerUrl"
+Write-Host "Google login:    $(if ($env:GOOGLE_OAUTH_CLIENT_ID -and $env:VITE_GOOGLE_CLIENT_ID) { 'configured' } else { 'not configured' })"
+Write-Host "Microsoft login: $(if ($env:MICROSOFT_OAUTH_CLIENT_ID -and $env:VITE_MICROSOFT_CLIENT_ID) { 'configured' } else { 'not configured' })"
 Write-Host ""
+Write-Host "Set GOOGLE_OAUTH_CLIENT_ID or VITE_GOOGLE_CLIENT_ID before starting to enable Google login."
+Write-Host "Set MICROSOFT_OAUTH_CLIENT_ID or VITE_MICROSOFT_CLIENT_ID before starting to enable Microsoft login."
 Write-Host "Close the backend/frontend terminal windows to stop the app processes."
