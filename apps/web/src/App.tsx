@@ -70,7 +70,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell">
       <header className="topbar">
         <Link className="brand-mark" to="/">
-          <span className="brand-chip">PPTV</span>
+          <PremiumImage className="brand-logo" src="/brand/logo-chip.png" alt="ProPokerTV logo" fallbackLabel="PPTV" />
           <span className="brand-copy">
             <strong>ProPokerTV</strong>
             <span>premium poker media</span>

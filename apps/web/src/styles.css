@@ -104,18 +104,13 @@ video {
   align-items: center;
 }
 
-.brand-chip {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
+.brand-logo {
+  display: block;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: transparent;
-  color: var(--pptv-gold);
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(214, 175, 95, 0.22), 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .brand-copy {
@@ -994,5 +989,10 @@ video {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .brand-logo {
+    width: 42px;
+    height: 42px;
   }
 }
