@@ -209,6 +209,103 @@ video {
   letter-spacing: 0.08em;
 }
 
+.nav-signin {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-menu {
+  position: relative;
+}
+
+.account-menu summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.account-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.account-menu summary span:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.account-menu summary strong {
+  max-width: 12ch;
+  overflow: hidden;
+  color: var(--pptv-text);
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu summary small {
+  color: var(--pptv-text-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pptv-gold-soft), var(--pptv-gold-dark));
+  color: #080604;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.account-menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 30;
+  display: grid;
+  gap: 4px;
+  min-width: 220px;
+  padding: 10px;
+  border: 1px solid var(--edge-strong);
+  border-radius: 8px;
+  background: rgba(6, 11, 18, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.account-menu__panel a,
+.account-menu__panel button {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--pptv-text-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.account-menu__panel a:hover,
+.account-menu__panel button:hover {
+  background: rgba(214, 175, 95, 0.08);
+  color: var(--pptv-gold-soft);
+}
+
 .page-shell {
   margin: 0 auto;
   max-width: 1440px;
@@ -883,6 +980,180 @@ video {
   gap: 12px;
 }
 
+.calendar-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: 28px;
+  align-items: end;
+  padding: clamp(28px, 5vw, 56px);
+  background:
+    radial-gradient(circle at 82% 20%, rgba(214, 175, 95, 0.11), transparent 28%),
+    linear-gradient(135deg, rgba(3, 7, 12, 0.92), rgba(16, 24, 33, 0.94));
+}
+
+.calendar-hero h1 {
+  margin: 0;
+  color: var(--pptv-gold);
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 7vw, 6.6rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.calendar-hero p {
+  max-width: 68ch;
+  color: var(--pptv-text-muted);
+}
+
+.calendar-disclosure {
+  padding: 18px;
+  border: 1px solid var(--pptv-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.calendar-disclosure strong {
+  color: var(--pptv-gold-soft);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+
+.calendar-grid,
+.profile-settings-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.calendar-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  background: rgba(11, 17, 24, 0.88);
+  box-shadow: var(--shadow);
+}
+
+.event-card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.event-meta {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.event-meta dt {
+  color: var(--pptv-text-subtle);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.event-meta dd {
+  margin: 2px 0 0;
+  color: var(--pptv-text);
+}
+
+.profile-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.profile-tab {
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--pptv-text-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  padding: 10px 12px;
+  text-transform: uppercase;
+}
+
+.profile-tab--active {
+  border-color: var(--pptv-border);
+  color: var(--pptv-gold-soft);
+  background: rgba(214, 175, 95, 0.09);
+}
+
+.profile-settings-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.42fr);
+  align-items: start;
+}
+
+.profile-editor {
+  min-width: 0;
+}
+
+.planned-field-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.planned-field-list .field:disabled {
+  cursor: not-allowed;
+  color: var(--pptv-text-subtle);
+  opacity: 0.82;
+}
+
+.profile-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-stat-grid span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--pptv-text-muted);
+}
+
+.profile-stat-grid strong {
+  color: var(--pptv-gold-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.15rem;
+}
+
+.premium-profile-card {
+  position: sticky;
+  top: 116px;
+  overflow: hidden;
+  padding: 0 0 22px;
+}
+
+.premium-profile-card > p,
+.premium-profile-card > small,
+.premium-profile-card .reputation-row,
+.premium-profile-card .badge-row {
+  margin-left: 22px;
+  margin-right: 22px;
+}
+
 .report-row {
   display: flex;
   justify-content: space-between;
@@ -917,11 +1188,23 @@ video {
   .topbar,
   .hero-panel,
   .contest-hero,
-  .auth-layout {
+  .auth-layout,
+  .calendar-hero,
+  .profile-settings-layout {
     grid-template-columns: 1fr;
   }
 
   .topbar {
+    position: static;
+  }
+
+  .calendar-grid,
+  .planned-field-list,
+  .profile-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-profile-card {
     position: static;
   }
 
@@ -977,18 +1260,37 @@ video {
   }
 
   .main-nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
     gap: 8px 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
     width: 100%;
   }
 
   .main-nav a {
     padding: 8px 2px;
     font-size: 0.7rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 0 0 auto;
     white-space: nowrap;
+  }
+
+  .nav-actions {
+    width: 100%;
+  }
+
+  .account-menu,
+  .account-menu summary {
+    width: 100%;
+  }
+
+  .account-menu__panel {
+    left: 0;
+    right: auto;
+    width: 100%;
+  }
+
+  .calendar-hero h1 {
+    font-size: 3rem;
   }
 
   .brand-logo {

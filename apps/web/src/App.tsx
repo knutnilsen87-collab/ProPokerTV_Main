@@ -65,6 +65,7 @@ function GoogleIcon() {
 function AppShell({ children }: { children: React.ReactNode }) {
   const { currentUser, signOut } = useAuth();
   const canManage = currentUser?.role === "ADMIN" || currentUser?.role === "MODERATOR";
+  const accountLabel = currentUser?.email.split("@")[0] ?? "Account";
 
   return (
     <div className="app-shell">
@@ -78,31 +79,45 @@ function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className="main-nav">
-          <NavLink to="/">Home/League</NavLink>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/play-of-the-week">League</NavLink>
           <NavLink to="/clips">Clips</NavLink>
           <NavLink to="/leaderboard">Rankings</NavLink>
+          <NavLink to="/calendar">Calendar</NavLink>
           <NavLink to="/creators/acecreator">Creators</NavLink>
           <NavLink to="/upload">Upload</NavLink>
+          {currentUser ? <NavLink to="/settings/profile">Profile</NavLink> : null}
           {canManage ? <NavLink to="/admin/contests">Admin</NavLink> : null}
           {canManage ? <NavLink to="/admin/moderation">Moderation</NavLink> : null}
-          {currentUser ? <NavLink to="/settings/profile">Profile</NavLink> : <NavLink to="/login">Sign in</NavLink>}
         </nav>
 
         <div className="nav-actions">
           {currentUser ? (
-            <>
-              <div className="signed-in-chip">
-                <span>{currentUser.email}</span>
-                <small>{currentUser.role}</small>
+            <details className="account-menu">
+              <summary>
+                <span className="account-avatar">{accountLabel.slice(0, 2).toUpperCase()}</span>
+                <span>
+                  <strong>{accountLabel}</strong>
+                  <small>{currentUser.role}</small>
+                </span>
+              </summary>
+              <div className="account-menu__panel">
+                <Link to="/settings/profile">Profile</Link>
+                <Link to="/clips">My clips</Link>
+                <Link to="/calendar">Calendar preferences</Link>
+                <Link to="/settings/profile#account">Settings</Link>
+                <button type="button" onClick={signOut}>Sign out</button>
               </div>
-              <button className="button secondary" onClick={signOut}>
-                Sign out
-              </button>
-            </>
+            </details>
           ) : (
-            <Link className="button primary" to="/register">
-              Join the League
-            </Link>
+            <>
+              <Link className="nav-signin" to="/login">
+                Sign in
+              </Link>
+              <Link className="button primary" to="/register">
+                Join the League
+              </Link>
+            </>
           )}
         </div>
       </header>
@@ -904,8 +919,145 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
   );
 }
 
+const profileTabs = [
+  "Public Profile",
+  "Poker Identity",
+  "Creator Tools",
+  "League Stats",
+  "Calendar Preferences",
+  "Account",
+] as const;
+
+type ProfileTab = (typeof profileTabs)[number];
+
+const plannedFieldGroups: Record<"identity" | "creator" | "calendar", Array<[string, string]>> = {
+  identity: [
+    ["Poker roles", "Live player, creator, commentator"],
+    ["Preferred games", "Texas Hold'em, Omaha, mixed games"],
+    ["Preferred formats", "Tournament, cash game, live events"],
+    ["Content focus", "Bluff spots, hand breakdowns, table drama"],
+  ],
+  creator: [
+    ["Creator tagline", "One-line positioning for discovery"],
+    ["Featured clip", "Pinned hero clip from approved uploads"],
+    ["Collaboration open", "Visible sponsor and creator collaboration signal"],
+    ["Social links", "YouTube, TikTok, Instagram, Twitch, X, website"],
+  ],
+  calendar: [
+    ["Interested event types", "Live tournaments, creator events, watch parties"],
+    ["Preferred region", "Country, city, or online-first"],
+    ["Online events allowed", "Include online series in recommendations"],
+    ["Partner offers opt-in", "Future commercial preference, never gambling deposits"],
+  ],
+};
+
+function PlannedFieldList({ fields }: { fields: Array<[string, string]> }) {
+  return (
+    <div className="planned-field-list">
+      {fields.map(([label, value]) => (
+        <label key={label}>
+          <span>{label}</span>
+          <input className="field" value={value} disabled readOnly />
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function CalendarPage() {
+  const events = [
+    {
+      name: "Nordic Poker Weekend",
+      organizer: "Partner card room",
+      type: "Live tournament",
+      date: "May 24, 2026",
+      location: "Oslo, Norway",
+      label: "Featured partner",
+    },
+    {
+      name: "Creator Hand Review Night",
+      organizer: "ProPokerTV creators",
+      type: "Creator event",
+      date: "June 2, 2026",
+      location: "Online",
+      label: "Community",
+    },
+    {
+      name: "Summer Clip Challenge",
+      organizer: "ProPokerTV league desk",
+      type: "Partner contest",
+      date: "June 14, 2026",
+      location: "Online series",
+      label: "Coming soon",
+    },
+  ];
+
+  return (
+    <div className="stack-xl">
+      <section className="calendar-hero panel">
+        <div>
+          <span className="eyebrow">Event discovery</span>
+          <h1>Poker Calendar</h1>
+          <p>
+            Discover upcoming poker tournaments, club nights, online series, creator events, and partner registrations without turning ProPokerTV into a betting product.
+          </p>
+          <div className="hero-actions">
+            <Link className="button primary" to="/settings/profile">
+              Set calendar preferences
+            </Link>
+            <Link className="button secondary" to="/upload">
+              Submit an event
+            </Link>
+          </div>
+        </div>
+        <aside className="calendar-disclosure">
+          <strong>Partner disclosure</strong>
+          <p>Some event links may be partner or affiliate links. ProPokerTV is a non-gambling media platform. We do not operate gambling services.</p>
+        </aside>
+      </section>
+
+      <section className="stack-md">
+        <SectionTitle
+          eyebrow="Upcoming"
+          title="Curated event preview"
+          body="Static preview cards for now. Backend event publishing, safety controls, and outbound click tracking come in a later explicit phase."
+        />
+        <div className="calendar-grid">
+          {events.map((event) => (
+            <article className="event-card" key={event.name}>
+              <div className="meta-row">
+                <span>{event.label}</span>
+                <span>{event.type}</span>
+              </div>
+              <h3>{event.name}</h3>
+              <dl className="event-meta">
+                <div>
+                  <dt>Organizer</dt>
+                  <dd>{event.organizer}</dd>
+                </div>
+                <div>
+                  <dt>Date</dt>
+                  <dd>{event.date}</dd>
+                </div>
+                <div>
+                  <dt>Location</dt>
+                  <dd>{event.location}</dd>
+                </div>
+              </dl>
+              <button className="button secondary" type="button" disabled>
+                Learn more
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function ProfileSettingsPage() {
   const { tokens, setTokens, currentUser } = useAuth();
+  const [activeTab, setActiveTab] = useState<ProfileTab>("Public Profile");
   const [form, setForm] = useState({
     username: "",
     displayName: "",
@@ -951,35 +1103,109 @@ function ProfileSettingsPage() {
 
   return (
     <div className="stack-lg">
-      <SectionTitle eyebrow="Settings" title="My profile" body="Keep identity, profile copy, and media surfaces ready for the league." />
-      <div className="settings-grid">
-        <form className="panel stack-sm" onSubmit={submit}>
-          <label>
-            <span>Username</span>
-            <input className="field" value={form.username} onChange={(event) => setForm((current) => ({ ...current, username: event.target.value }))} />
-          </label>
-          <label>
-            <span>Display name</span>
-            <input className="field" value={form.displayName} onChange={(event) => setForm((current) => ({ ...current, displayName: event.target.value }))} />
-          </label>
-          <label>
-            <span>Bio</span>
-            <textarea className="field" rows={4} value={form.bio} onChange={(event) => setForm((current) => ({ ...current, bio: event.target.value }))} />
-          </label>
-          <label>
-            <span>Avatar URL</span>
-            <input className="field" value={form.avatarUrl} onChange={(event) => setForm((current) => ({ ...current, avatarUrl: event.target.value }))} />
-          </label>
-          <label>
-            <span>Banner URL</span>
-            <input className="field" value={form.bannerUrl} onChange={(event) => setForm((current) => ({ ...current, bannerUrl: event.target.value }))} />
-          </label>
-          {message ? <div className="success-chip">{message}</div> : null}
-          {error ? <div className="inline-error">{error}</div> : null}
-          <button className="button primary">Save profile</button>
-        </form>
+      <SectionTitle
+        eyebrow="Profile settings"
+        title="Build your poker identity"
+        body="Your profile powers creator discovery, league rankings, calendar recommendations, and partner opportunities."
+      />
+      <div className="profile-tabs" role="tablist" aria-label="Profile sections">
+        {profileTabs.map((tab) => (
+          <button
+            className={cx("profile-tab", activeTab === tab && "profile-tab--active")}
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            type="button"
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
-        <div className="panel profile-preview">
+      <div className="profile-settings-layout">
+        <section className="panel profile-editor">
+          {activeTab === "Public Profile" ? (
+            <form className="stack-sm" onSubmit={submit}>
+              <label>
+                <span>Username</span>
+                <input className="field" value={form.username} onChange={(event) => setForm((current) => ({ ...current, username: event.target.value }))} />
+              </label>
+              <label>
+                <span>Display name</span>
+                <input className="field" value={form.displayName} onChange={(event) => setForm((current) => ({ ...current, displayName: event.target.value }))} />
+              </label>
+              <label>
+                <span>Bio</span>
+                <textarea className="field" rows={4} value={form.bio} onChange={(event) => setForm((current) => ({ ...current, bio: event.target.value }))} />
+              </label>
+              <label>
+                <span>Avatar URL</span>
+                <input className="field" value={form.avatarUrl} onChange={(event) => setForm((current) => ({ ...current, avatarUrl: event.target.value }))} />
+              </label>
+              <label>
+                <span>Banner URL</span>
+                <input className="field" value={form.bannerUrl} onChange={(event) => setForm((current) => ({ ...current, bannerUrl: event.target.value }))} />
+              </label>
+              {message ? <div className="success-chip">{message}</div> : null}
+              {error ? <div className="inline-error">{error}</div> : null}
+              <button className="button primary">Save public profile</button>
+            </form>
+          ) : null}
+
+          {activeTab === "Poker Identity" ? (
+            <div className="stack-md">
+              <SectionTitle eyebrow="Planned identity fields" title="Poker Identity" body="These fields are intentionally read-only until the backend profile model is expanded." />
+              <PlannedFieldList fields={plannedFieldGroups.identity} />
+            </div>
+          ) : null}
+
+          {activeTab === "Creator Tools" ? (
+            <div className="stack-md">
+              <SectionTitle eyebrow="Creator surface" title="Creator Tools" body="Future creator discovery controls are shown without pretending they persist yet." />
+              <PlannedFieldList fields={plannedFieldGroups.creator} />
+            </div>
+          ) : null}
+
+          {activeTab === "League Stats" ? (
+            <div className="stack-md">
+              <SectionTitle eyebrow="Read-only reputation" title="League Stats" body="Contest results and rankings are derived from league activity and cannot be edited manually." />
+              <div className="profile-stat-grid">
+                <span><strong>0</strong>Total clips</span>
+                <span><strong>0</strong>Weekly wins</span>
+                <span><strong>0</strong>Nominations</span>
+                <span><strong>Pending</strong>Current rank</span>
+              </div>
+            </div>
+          ) : null}
+
+          {activeTab === "Calendar Preferences" ? (
+            <div className="stack-md">
+              <SectionTitle eyebrow="Event discovery" title="Calendar Preferences" body="Preference UI is staged for future event recommendations and partner discovery." />
+              <PlannedFieldList fields={plannedFieldGroups.calendar} />
+            </div>
+          ) : null}
+
+          {activeTab === "Account" ? (
+            <div className="stack-md" id="account">
+              <SectionTitle eyebrow="Security" title="Account" body="Authentication and session controls remain backed by the existing auth flow." />
+              <dl className="meta-list">
+                <div>
+                  <dt>Email</dt>
+                  <dd>{currentUser.email}</dd>
+                </div>
+                <div>
+                  <dt>Role</dt>
+                  <dd>{currentUser.role}</dd>
+                </div>
+                <div>
+                  <dt>Password and sessions</dt>
+                  <dd>Use sign-in and reset flows for now. Session management is planned for a later security phase.</dd>
+                </div>
+              </dl>
+            </div>
+          ) : null}
+        </section>
+
+        <aside className="panel profile-preview premium-profile-card">
           <div className="creator-banner" style={{ backgroundImage: form.bannerUrl ? `url(${form.bannerUrl})` : undefined }} />
           <div className="creator-profile-row">
             <div className="avatar-orb">
@@ -988,12 +1214,21 @@ function ProfileSettingsPage() {
             <div>
               <h3>{form.displayName || "Display name"}</h3>
               <p>@{form.username || "username"}</p>
-              <small>{currentUser.email}</small>
+              <small>Creator / Player profile</small>
             </div>
           </div>
           <p>{form.bio || "Profile preview updates live while you edit."}</p>
+          <div className="reputation-row">
+            <span>Weekly wins 0</span>
+            <span>Total votes 0</span>
+            <span>Rank pending</span>
+          </div>
+          <div className="badge-row">
+            <span className="success-chip">League ready</span>
+            <span className="signed-in-chip">Identity in progress</span>
+          </div>
           {profile ? <small>User #{profile.userId}</small> : null}
-        </div>
+        </aside>
       </div>
     </div>
   );
@@ -1139,6 +1374,7 @@ export function App() {
           <Route path="/creators/:slug" element={<CreatorPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/play-of-the-week" element={<ContestPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/login" element={<AuthPage mode="login" />} />
           <Route path="/register" element={<AuthPage mode="register" />} />
           <Route path="/settings/profile" element={<ProfileSettingsPage />} />

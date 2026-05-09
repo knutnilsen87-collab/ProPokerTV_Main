@@ -1,0 +1,34 @@
+{
+  "bundle_id": "propokertv-nav-profile-calendar-security-001",
+  "bundle_version": 1,
+  "domain": "aegiscode",
+  "facts": [
+    "Repo is a ProPokerTV non-gambling poker media/creator/clips/community/contest/leaderboard platform.",
+    "Implemented slices include auth/profile/creator/clips/comments/reactions/moderation/weekly contest/leaderboard.",
+    "Not-yet-finished items include refresh token rotation, integration tests, signed uploads, contest finalize job.",
+    "Weekly contest foundation is admin-created contest, nominated approved clips, one vote per user, winner by vote count."
+  ],
+  "locked_decisions": [
+    "Approved nav: Home, League, Clips, Rankings, Calendar, Creators, Upload, Profile.",
+    "Profile becomes identity/reputation editor with six sections.",
+    "Calendar becomes first-class discovery/affiliate surface with non-gambling disclosure.",
+    "Visual direction remains Midnight Gold Editorial League.",
+    "Security baseline: ASVS L1 MVP with selected L2 controls."
+  ],
+  "recommended_next_action": "PR 1: frontend-only navigation + profile UX + Calendar placeholder, preserving existing backend contracts.",
+  "fallback_action": "PR 1a: add Calendar nav/route and premium account nav first; profile tabs next.",
+  "verification_state": {
+    "status": "docs_ready",
+    "must_check": [
+      "npm run build",
+      "profile save still works",
+      "nav routes work",
+      "calendar route works",
+      "desktop/mobile smoke"
+    ]
+  },
+  "repo_health": {
+    "status": "improved if docs are placed under docs/project-source-of-truth",
+    "clean_success_allowed": false
+  }
+}

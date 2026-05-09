@@ -1,0 +1,37 @@
+{
+  "baseline": "OWASP ASVS Level 1 for MVP, selected Level 2 controls for auth/admin/upload/moderation/voting/calendar/partner boundaries",
+  "crypto": {
+    "transport": "TLS/HTTPS in non-local environments",
+    "at_rest": "managed database/object storage encryption where available",
+    "application_level": "AES-256-GCM only for sensitive field/object encryption when required",
+    "passwords": "Argon2id or bcrypt hashing, never encryption"
+  },
+  "priority_backlog": {
+    "P0": [
+      "remove prod debug/demo",
+      "lock CORS",
+      "role ownership checks",
+      "vote-once DB constraint",
+      "finalized contest lock",
+      "auth rate limiting",
+      "secrets hygiene",
+      "security headers"
+    ],
+    "P1": [
+      "signed uploads",
+      "file validation",
+      "upload scan/quarantine",
+      "refresh token rotation",
+      "admin/moderator MFA",
+      "moderation hardening"
+    ],
+    "P2": [
+      "partner tenant boundary tests",
+      "event click tracking backend",
+      "sponsored disclosure",
+      "affiliate reporting",
+      "audit dashboard",
+      "security review"
+    ]
+  }
+}

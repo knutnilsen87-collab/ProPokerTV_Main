@@ -1,0 +1,49 @@
+{
+  "visual_direction": "Midnight Gold Editorial League",
+  "approved_nav": [
+    "Home",
+    "League",
+    "Clips",
+    "Rankings",
+    "Calendar",
+    "Creators",
+    "Upload",
+    "Profile"
+  ],
+  "profile_sections": [
+    "Public Profile",
+    "Poker Identity",
+    "Creator Tools",
+    "League Stats",
+    "Calendar Preferences",
+    "Account"
+  ],
+  "calendar": {
+    "purpose": "Tournament/event discovery and partner registrations",
+    "disclosure": "Some event links may be partner or affiliate links. ProPokerTV is a non-gambling media platform. We do not operate gambling services.",
+    "allowed_ctas": [
+      "View event",
+      "Register with partner",
+      "Open official event page",
+      "Learn more"
+    ],
+    "forbidden_ctas": [
+      "Bet now",
+      "Deposit now",
+      "Play for cash",
+      "Gamble now"
+    ]
+  },
+  "next_pr": {
+    "target": "apps/web",
+    "type": "frontend_only",
+    "validation": [
+      "npm run build",
+      "manual nav/profile/calendar smoke"
+    ],
+    "must_preserve": [
+      "existing backend contracts",
+      "existing profile save fields"
+    ]
+  }
+}
