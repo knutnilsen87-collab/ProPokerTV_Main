@@ -14,8 +14,21 @@ import type {
   Report,
   SocialAuthProvider,
 } from "../types";
+import {
+  previewClips,
+  previewComments,
+  previewContest,
+  previewContestHistory,
+  previewCreatorLeaderboard,
+  previewCreatorProfile,
+  previewLeaderboard,
+  previewProfile,
+  previewReactions,
+} from "./previewData";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
+const PREVIEW_FALLBACK = import.meta.env.VITE_PREVIEW_FALLBACK !== "false";
+const PREVIEW_MODE = import.meta.env.VITE_PREVIEW_MODE === "true" || (typeof window !== "undefined" && window.location.hostname.endsWith(".vercel.app"));
 
 export const DEMO_ACCOUNTS = [
   { label: "Admin demo", email: "admin@propokertv.test", password: "password" },
@@ -106,6 +119,20 @@ export function getApiBase(): string {
   return API_BASE;
 }
 
+async function withPreviewFallback<T>(action: () => Promise<T>, fallback: () => T): Promise<T> {
+  if (PREVIEW_MODE) {
+    return fallback();
+  }
+  try {
+    return await action();
+  } catch (error) {
+    if (PREVIEW_FALLBACK) {
+      return fallback();
+    }
+    throw error;
+  }
+}
+
 export async function signup(email: string, password: string): Promise<AuthResponse> {
   return request<AuthResponse>("/api/v1/auth/signup", {
     method: "POST",
@@ -160,11 +187,17 @@ export async function getCurrentUser(tokens: Tokens): Promise<CurrentUser> {
 }
 
 export async function getClips(): Promise<Clip[]> {
-  return request<Clip[]>("/api/v1/clips");
+  return withPreviewFallback(
+    () => request<Clip[]>("/api/v1/clips"),
+    () => previewClips,
+  );
 }
 
 export async function getClip(slug: string): Promise<Clip> {
-  return request<Clip>(`/api/v1/clips/${slug}`);
+  return withPreviewFallback(
+    () => request<Clip>(`/api/v1/clips/${slug}`),
+    () => previewClips.find((clip) => clip.slug === slug) ?? previewClips[0],
+  );
 }
 
 export async function createClip(
@@ -192,7 +225,10 @@ export async function createClip(
 }
 
 export async function getComments(clipSlug: string): Promise<Comment[]> {
-  return request<Comment[]>(`/api/v1/comments/clip/${clipSlug}`);
+  return withPreviewFallback(
+    () => request<Comment[]>(`/api/v1/comments/clip/${clipSlug}`),
+    () => previewComments,
+  );
 }
 
 export async function postComment(tokens: Tokens, clipSlug: string, body: string): Promise<Comment> {
@@ -207,7 +243,10 @@ export async function postComment(tokens: Tokens, clipSlug: string, body: string
 }
 
 export async function getReactions(clipSlug: string, tokens?: Tokens | null): Promise<ReactionSummary[]> {
-  return request<ReactionSummary[]>(`/api/v1/reactions/clip/${clipSlug}`, {}, tokens ?? undefined);
+  return withPreviewFallback(
+    () => request<ReactionSummary[]>(`/api/v1/reactions/clip/${clipSlug}`, {}, tokens ?? undefined),
+    () => previewReactions,
+  );
 }
 
 export async function react(tokens: Tokens, clipSlug: string, reactionType: string): Promise<string> {
@@ -232,7 +271,10 @@ export async function unreact(tokens: Tokens, clipSlug: string, reactionType: st
 }
 
 export async function getContest(): Promise<Contest> {
-  return request<Contest>("/api/v1/contests/open");
+  return withPreviewFallback(
+    () => request<Contest>("/api/v1/contests/open"),
+    () => previewContest,
+  );
 }
 
 export async function createContest(tokens: Tokens, payload: CreateContestPayload): Promise<Contest> {
@@ -279,7 +321,10 @@ export async function vote(tokens: Tokens, contestId: number, entryId: number): 
 }
 
 export async function getContestHistory(): Promise<Contest[]> {
-  return request<Contest[]>("/api/v1/contests/history");
+  return withPreviewFallback(
+    () => request<Contest[]>("/api/v1/contests/history"),
+    () => previewContestHistory,
+  );
 }
 
 export async function finalizeContest(tokens: Tokens, contestId: number): Promise<Contest> {
@@ -322,11 +367,17 @@ export async function reportTarget(
 }
 
 export async function getLeaderboard(): Promise<LeaderboardRow[]> {
-  return request<LeaderboardRow[]>("/api/v1/leaderboards/top-clips");
+  return withPreviewFallback(
+    () => request<LeaderboardRow[]>("/api/v1/leaderboards/top-clips"),
+    () => previewLeaderboard,
+  );
 }
 
 export async function getCreatorLeaderboard(): Promise<CreatorLeaderboardRow[]> {
-  return request<CreatorLeaderboardRow[]>("/api/v1/leaderboards/top-creators");
+  return withPreviewFallback(
+    () => request<CreatorLeaderboardRow[]>("/api/v1/leaderboards/top-creators"),
+    () => previewCreatorLeaderboard,
+  );
 }
 
 export async function getMyProfile(tokens: Tokens): Promise<Profile> {
@@ -354,9 +405,15 @@ export async function updateMyProfile(
 }
 
 export async function getPublicProfile(username: string): Promise<Profile> {
-  return request<Profile>(`/api/v1/profiles/${username}`);
+  return withPreviewFallback(
+    () => request<Profile>(`/api/v1/profiles/${username}`),
+    () => ({ ...previewProfile, username }),
+  );
 }
 
 export async function getCreatorProfile(slug: string): Promise<CreatorProfile> {
-  return request<CreatorProfile>(`/api/v1/creators/${slug}`);
+  return withPreviewFallback(
+    () => request<CreatorProfile>(`/api/v1/creators/${slug}`),
+    () => ({ ...previewCreatorProfile, creatorSlug: slug }),
+  );
 }
