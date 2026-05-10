@@ -49,18 +49,37 @@ class ProfileApiContractTest extends IntegrationTestSupport {
                                   "displayName":"River Queen",
                                   "bio":"Aggressive late-stage grinder",
                                   "avatarUrl":"https://cdn.example.com/avatar.jpg",
-                                  "bannerUrl":"https://cdn.example.com/banner.jpg"
+                                  "bannerUrl":"https://cdn.example.com/banner.jpg",
+                                  "country":"Norway",
+                                  "city":"Oslo",
+                                  "languages":["English","Norwegian"],
+                                  "profileType":"Creator",
+                                  "pokerRoles":["Live player","Creator"],
+                                  "preferredGames":["Texas Hold'em"],
+                                  "preferredFormats":["Tournament"],
+                                  "contentFocus":["River moments"],
+                                  "preferredRegion":"Nordics",
+                                  "interestedEventTypes":["Live tournament"],
+                                  "onlineEventsAllowed":true,
+                                  "maxTravelDistanceKm":500,
+                                  "eventAlertsOptIn":true,
+                                  "partnerOffersOptIn":false
                                 }
                                 """.formatted(username)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.username").value(username))
-                .andExpect(jsonPath("$.data.displayName").value("River Queen"));
+                .andExpect(jsonPath("$.data.displayName").value("River Queen"))
+                .andExpect(jsonPath("$.data.profileType").value("Creator"))
+                .andExpect(jsonPath("$.data.pokerRoles[0]").value("Live player"))
+                .andExpect(jsonPath("$.data.interestedEventTypes[0]").value("Live tournament"));
 
         mockMvc.perform(get("/api/v1/profiles/me")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.username").value(username))
-                .andExpect(jsonPath("$.data.bio").value("Aggressive late-stage grinder"));
+                .andExpect(jsonPath("$.data.bio").value("Aggressive late-stage grinder"))
+                .andExpect(jsonPath("$.data.country").value("Norway"))
+                .andExpect(jsonPath("$.data.eventAlertsOptIn").value(true));
 
         mockMvc.perform(get("/api/v1/profiles/{username}", username))
                 .andExpect(status().isOk())

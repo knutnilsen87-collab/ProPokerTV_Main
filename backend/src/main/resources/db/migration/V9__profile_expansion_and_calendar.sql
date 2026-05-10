@@ -1,0 +1,95 @@
+ALTER TABLE profile
+    ADD COLUMN country VARCHAR(80),
+    ADD COLUMN city VARCHAR(80),
+    ADD COLUMN languages_csv VARCHAR(240),
+    ADD COLUMN profile_type VARCHAR(40),
+    ADD COLUMN poker_roles_csv VARCHAR(500),
+    ADD COLUMN preferred_games_csv VARCHAR(500),
+    ADD COLUMN preferred_formats_csv VARCHAR(500),
+    ADD COLUMN content_focus_csv VARCHAR(500),
+    ADD COLUMN preferred_region VARCHAR(120),
+    ADD COLUMN interested_event_types_csv VARCHAR(500),
+    ADD COLUMN online_events_allowed BOOLEAN NOT NULL DEFAULT TRUE,
+    ADD COLUMN max_travel_distance_km INT,
+    ADD COLUMN event_alerts_opt_in BOOLEAN NOT NULL DEFAULT FALSE,
+    ADD COLUMN partner_offers_opt_in BOOLEAN NOT NULL DEFAULT FALSE;
+
+CREATE TABLE poker_event (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(140) NOT NULL,
+    organizer_name VARCHAR(140) NOT NULL,
+    organizer_type VARCHAR(60) NOT NULL,
+    event_type VARCHAR(60) NOT NULL,
+    starts_at TIMESTAMPTZ NOT NULL,
+    ends_at TIMESTAMPTZ,
+    timezone VARCHAR(80) NOT NULL,
+    location_type VARCHAR(30) NOT NULL,
+    country VARCHAR(80),
+    city VARCHAR(80),
+    venue_name VARCHAR(140),
+    online_url VARCHAR(500),
+    registration_url VARCHAR(500),
+    affiliate_url VARCHAR(500),
+    affiliate_disclosure_required BOOLEAN NOT NULL DEFAULT FALSE,
+    image_url VARCHAR(500),
+    description VARCHAR(1000),
+    tags_csv VARCHAR(500),
+    status VARCHAR(30) NOT NULL DEFAULT 'DRAFT',
+    featured BOOLEAN NOT NULL DEFAULT FALSE,
+    sponsored BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_poker_event_status_starts_at ON poker_event(status, starts_at);
+CREATE INDEX idx_poker_event_featured ON poker_event(featured);
+
+INSERT INTO poker_event (
+    title, organizer_name, organizer_type, event_type, starts_at, ends_at, timezone,
+    location_type, country, city, venue_name, registration_url, affiliate_url,
+    affiliate_disclosure_required, image_url, description, tags_csv, status, featured, sponsored
+) VALUES
+(
+    'Nordic Poker Weekend',
+    'Partner card room',
+    'Partner',
+    'Live tournament',
+    '2026-05-24T18:00:00Z',
+    '2026-05-26T22:00:00Z',
+    'Europe/Oslo',
+    'LIVE',
+    'Norway',
+    'Oslo',
+    'Oslo poker club',
+    'https://example.com/nordic-poker-weekend',
+    'https://example.com/nordic-poker-weekend?partner=propokertv',
+    TRUE,
+    '/images/thumbnails/high-stakes.jpeg',
+    'A curated live tournament weekend surfaced as a partner discovery card for the ProPokerTV audience.',
+    'live tournament,nordic,partner',
+    'PUBLISHED',
+    TRUE,
+    TRUE
+),
+(
+    'Creator Hand Review Night',
+    'ProPokerTV creators',
+    'Creator',
+    'Creator event',
+    '2026-06-02T19:00:00Z',
+    NULL,
+    'Europe/Oslo',
+    'ONLINE',
+    NULL,
+    NULL,
+    NULL,
+    'https://example.com/creator-review-night',
+    NULL,
+    FALSE,
+    '/images/thumbnails/strategy.jpeg',
+    'An online creator event focused on hand breakdowns, reputation, and community discovery.',
+    'online,creator,hand review',
+    'PUBLISHED',
+    FALSE,
+    FALSE
+);

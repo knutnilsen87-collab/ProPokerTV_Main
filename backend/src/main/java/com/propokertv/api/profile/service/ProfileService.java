@@ -11,6 +11,8 @@ import com.propokertv.api.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,26 @@ public class ProfileService {
         profile.setBio(request.bio());
         profile.setAvatarUrl(request.avatarUrl());
         profile.setBannerUrl(request.bannerUrl());
+        profile.setCountry(request.country());
+        profile.setCity(request.city());
+        profile.setLanguagesCsv(toCsv(request.languages()));
+        profile.setProfileType(request.profileType());
+        profile.setPokerRolesCsv(toCsv(request.pokerRoles()));
+        profile.setPreferredGamesCsv(toCsv(request.preferredGames()));
+        profile.setPreferredFormatsCsv(toCsv(request.preferredFormats()));
+        profile.setContentFocusCsv(toCsv(request.contentFocus()));
+        profile.setPreferredRegion(request.preferredRegion());
+        profile.setInterestedEventTypesCsv(toCsv(request.interestedEventTypes()));
+        if (request.onlineEventsAllowed() != null) {
+            profile.setOnlineEventsAllowed(request.onlineEventsAllowed());
+        }
+        profile.setMaxTravelDistanceKm(request.maxTravelDistanceKm());
+        if (request.eventAlertsOptIn() != null) {
+            profile.setEventAlertsOptIn(request.eventAlertsOptIn());
+        }
+        if (request.partnerOffersOptIn() != null) {
+            profile.setPartnerOffersOptIn(request.partnerOffersOptIn());
+        }
         var saved = profileRepository.save(profile);
         return toResponse(saved);
     }
@@ -50,6 +72,32 @@ public class ProfileService {
 
     private ProfileResponse toResponse(Profile profile) {
         return new ProfileResponse(profile.getId(), profile.getUsername(), profile.getDisplayName(),
-                profile.getBio(), profile.getAvatarUrl(), profile.getBannerUrl());
+                profile.getBio(), profile.getAvatarUrl(), profile.getBannerUrl(),
+                profile.getCountry(), profile.getCity(), fromCsv(profile.getLanguagesCsv()), profile.getProfileType(),
+                fromCsv(profile.getPokerRolesCsv()), fromCsv(profile.getPreferredGamesCsv()),
+                fromCsv(profile.getPreferredFormatsCsv()), fromCsv(profile.getContentFocusCsv()),
+                profile.getPreferredRegion(), fromCsv(profile.getInterestedEventTypesCsv()),
+                profile.isOnlineEventsAllowed(), profile.getMaxTravelDistanceKm(),
+                profile.isEventAlertsOptIn(), profile.isPartnerOffersOptIn());
+    }
+
+    private String toCsv(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        return String.join(",", values.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .map(String::trim)
+                .toList());
+    }
+
+    private List<String> fromCsv(String csv) {
+        if (csv == null || csv.isBlank()) {
+            return List.of();
+        }
+        return Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isBlank())
+                .toList();
     }
 }

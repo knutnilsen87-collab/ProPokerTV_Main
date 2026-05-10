@@ -9,6 +9,7 @@ import type {
   CreatorProfile,
   CurrentUser,
   LeaderboardRow,
+  PokerEvent,
   Profile,
   ReactionSummary,
   Report,
@@ -21,6 +22,7 @@ import {
   previewContestHistory,
   previewCreatorLeaderboard,
   previewCreatorProfile,
+  previewEvents,
   previewLeaderboard,
   previewProfile,
   previewReactions,
@@ -392,6 +394,20 @@ export async function updateMyProfile(
     bio: string;
     avatarUrl: string;
     bannerUrl: string;
+    country?: string;
+    city?: string;
+    languages?: string[];
+    profileType?: string;
+    pokerRoles?: string[];
+    preferredGames?: string[];
+    preferredFormats?: string[];
+    contentFocus?: string[];
+    preferredRegion?: string;
+    interestedEventTypes?: string[];
+    onlineEventsAllowed?: boolean;
+    maxTravelDistanceKm?: number | null;
+    eventAlertsOptIn?: boolean;
+    partnerOffersOptIn?: boolean;
   },
 ): Promise<Profile> {
   return request<Profile>(
@@ -415,5 +431,12 @@ export async function getCreatorProfile(slug: string): Promise<CreatorProfile> {
   return withPreviewFallback(
     () => request<CreatorProfile>(`/api/v1/creators/${slug}`),
     () => ({ ...previewCreatorProfile, creatorSlug: slug }),
+  );
+}
+
+export async function getCalendarEvents(): Promise<PokerEvent[]> {
+  return withPreviewFallback(
+    () => request<PokerEvent[]>("/api/v1/calendar/events"),
+    () => previewEvents,
   );
 }

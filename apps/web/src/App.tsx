@@ -13,6 +13,7 @@ import type {
   CreatorProfile,
   LeaderboardRow,
   CreatorLeaderboardRow,
+  PokerEvent,
   Profile,
   ReactionSummary,
   SocialAuthProvider,
@@ -964,33 +965,39 @@ function PlannedFieldList({ fields }: { fields: Array<[string, string]> }) {
   );
 }
 
+function parseCsvInput(value: string): string[] {
+  return value.split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+function listToInput(values?: string[] | null): string {
+  return values?.join(", ") ?? "";
+}
+
+function CsvField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string[];
+  onChange: (value: string[]) => void;
+  placeholder: string;
+}) {
+  return (
+    <label>
+      <span>{label}</span>
+      <input className="field" value={listToInput(value)} placeholder={placeholder} onChange={(event) => onChange(parseCsvInput(event.target.value))} />
+    </label>
+  );
+}
+
 function CalendarPage() {
-  const events = [
-    {
-      name: "Nordic Poker Weekend",
-      organizer: "Partner card room",
-      type: "Live tournament",
-      date: "May 24, 2026",
-      location: "Oslo, Norway",
-      label: "Featured partner",
-    },
-    {
-      name: "Creator Hand Review Night",
-      organizer: "ProPokerTV creators",
-      type: "Creator event",
-      date: "June 2, 2026",
-      location: "Online",
-      label: "Community",
-    },
-    {
-      name: "Summer Clip Challenge",
-      organizer: "ProPokerTV league desk",
-      type: "Partner contest",
-      date: "June 14, 2026",
-      location: "Online series",
-      label: "Coming soon",
-    },
-  ];
+  const [events, setEvents] = useState<PokerEvent[]>([]);
+
+  useEffect(() => {
+    void api.getCalendarEvents().then(setEvents).catch(() => setEvents([]));
+  }, []);
 
   return (
     <div className="stack-xl">
@@ -1024,31 +1031,38 @@ function CalendarPage() {
         />
         <div className="calendar-grid">
           {events.map((event) => (
-            <article className="event-card" key={event.name}>
+            <article className="event-card" key={event.id}>
               <div className="meta-row">
-                <span>{event.label}</span>
-                <span>{event.type}</span>
+                <span>{event.sponsored ? "Featured partner" : event.featured ? "Featured" : "Community"}</span>
+                <span>{event.eventType}</span>
               </div>
-              <h3>{event.name}</h3>
+              <h3>{event.title}</h3>
               <dl className="event-meta">
                 <div>
                   <dt>Organizer</dt>
-                  <dd>{event.organizer}</dd>
+                  <dd>{event.organizerName}</dd>
                 </div>
                 <div>
                   <dt>Date</dt>
-                  <dd>{event.date}</dd>
+                  <dd>{formatDate(event.startsAt)}</dd>
                 </div>
                 <div>
                   <dt>Location</dt>
-                  <dd>{event.location}</dd>
+                  <dd>{event.locationType === "ONLINE" ? "Online" : [event.city, event.country].filter(Boolean).join(", ") || "Location pending"}</dd>
                 </div>
               </dl>
-              <button className="button secondary" type="button" disabled>
-                Learn more
-              </button>
+              <p>{event.description}</p>
+              {event.affiliateDisclosureRequired ? <span className="success-chip">Partner link disclosed</span> : null}
+              <a className="button secondary" href={event.affiliateUrl ?? event.registrationUrl ?? event.onlineUrl ?? "#"} target="_blank" rel="noreferrer">
+                {event.affiliateUrl ? "Register with partner" : "Learn more"}
+              </a>
             </article>
           ))}
+          {!events.length ? (
+            <div className="empty-card">
+              <p>Calendar events are coming soon. Partner listings will appear here after safety review.</p>
+            </div>
+          ) : null}
         </div>
       </section>
     </div>
@@ -1064,6 +1078,20 @@ function ProfileSettingsPage() {
     bio: "",
     avatarUrl: "",
     bannerUrl: "",
+    country: "",
+    city: "",
+    languages: [] as string[],
+    profileType: "Creator",
+    pokerRoles: [] as string[],
+    preferredGames: [] as string[],
+    preferredFormats: [] as string[],
+    contentFocus: [] as string[],
+    preferredRegion: "",
+    interestedEventTypes: [] as string[],
+    onlineEventsAllowed: true,
+    maxTravelDistanceKm: "",
+    eventAlertsOptIn: false,
+    partnerOffersOptIn: false,
   });
   const [profile, setProfile] = useState<Profile | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -1080,21 +1108,42 @@ function ProfileSettingsPage() {
           bio: data.bio ?? "",
           avatarUrl: data.avatarUrl ?? "",
           bannerUrl: data.bannerUrl ?? "",
+          country: data.country ?? "",
+          city: data.city ?? "",
+          languages: data.languages ?? [],
+          profileType: data.profileType ?? "Creator",
+          pokerRoles: data.pokerRoles ?? [],
+          preferredGames: data.preferredGames ?? [],
+          preferredFormats: data.preferredFormats ?? [],
+          contentFocus: data.contentFocus ?? [],
+          preferredRegion: data.preferredRegion ?? "",
+          interestedEventTypes: data.interestedEventTypes ?? [],
+          onlineEventsAllowed: data.onlineEventsAllowed ?? true,
+          maxTravelDistanceKm: data.maxTravelDistanceKm ? String(data.maxTravelDistanceKm) : "",
+          eventAlertsOptIn: data.eventAlertsOptIn ?? false,
+          partnerOffersOptIn: data.partnerOffersOptIn ?? false,
         });
       })
       .catch((cause) => setError(cause instanceof Error ? cause.message : "Failed to load profile."));
   }, []);
 
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
+  const saveProfile = async () => {
     try {
-      const updated = await api.withRefresh((auth) => api.updateMyProfile(auth, form), tokens, setTokens);
+      const updated = await api.withRefresh((auth) => api.updateMyProfile(auth, {
+        ...form,
+        maxTravelDistanceKm: form.maxTravelDistanceKm ? Number(form.maxTravelDistanceKm) : null,
+      }), tokens, setTokens);
       setProfile(updated);
       setMessage("Profile updated.");
       setError(null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Failed to update profile.");
     }
+  };
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    await saveProfile();
   };
 
   if (!currentUser) {
@@ -1145,6 +1194,30 @@ function ProfileSettingsPage() {
                 <span>Banner URL</span>
                 <input className="field" value={form.bannerUrl} onChange={(event) => setForm((current) => ({ ...current, bannerUrl: event.target.value }))} />
               </label>
+              <label>
+                <span>Profile type</span>
+                <select className="field" value={form.profileType} onChange={(event) => setForm((current) => ({ ...current, profileType: event.target.value }))}>
+                  <option value="Fan">Fan</option>
+                  <option value="Player">Player</option>
+                  <option value="Creator">Creator</option>
+                  <option value="Club/Event">Club/Event</option>
+                  <option value="Brand/Partner">Brand/Partner</option>
+                </select>
+              </label>
+              <label>
+                <span>Country / region</span>
+                <input className="field" value={form.country} onChange={(event) => setForm((current) => ({ ...current, country: event.target.value }))} />
+              </label>
+              <label>
+                <span>City</span>
+                <input className="field" value={form.city} onChange={(event) => setForm((current) => ({ ...current, city: event.target.value }))} />
+              </label>
+              <CsvField
+                label="Languages"
+                value={form.languages}
+                placeholder="English, Norwegian"
+                onChange={(languages) => setForm((current) => ({ ...current, languages }))}
+              />
               {message ? <div className="success-chip">{message}</div> : null}
               {error ? <div className="inline-error">{error}</div> : null}
               <button className="button primary">Save public profile</button>
@@ -1153,8 +1226,14 @@ function ProfileSettingsPage() {
 
           {activeTab === "Poker Identity" ? (
             <div className="stack-md">
-              <SectionTitle eyebrow="Planned identity fields" title="Poker Identity" body="These fields are intentionally read-only until the backend profile model is expanded." />
-              <PlannedFieldList fields={plannedFieldGroups.identity} />
+              <SectionTitle eyebrow="Identity fields" title="Poker Identity" body="These fields now persist to the profile model and shape creator/player discovery." />
+              <CsvField label="Poker roles" value={form.pokerRoles} placeholder="Live player, Creator" onChange={(pokerRoles) => setForm((current) => ({ ...current, pokerRoles }))} />
+              <CsvField label="Preferred games" value={form.preferredGames} placeholder="Texas Hold'em, Omaha" onChange={(preferredGames) => setForm((current) => ({ ...current, preferredGames }))} />
+              <CsvField label="Preferred formats" value={form.preferredFormats} placeholder="Tournament, Live events" onChange={(preferredFormats) => setForm((current) => ({ ...current, preferredFormats }))} />
+              <CsvField label="Content focus" value={form.contentFocus} placeholder="Hand breakdowns, River moments" onChange={(contentFocus) => setForm((current) => ({ ...current, contentFocus }))} />
+              <button className="button primary" type="button" onClick={() => void saveProfile()}>
+                Save identity
+              </button>
             </div>
           ) : null}
 
@@ -1179,8 +1258,31 @@ function ProfileSettingsPage() {
 
           {activeTab === "Calendar Preferences" ? (
             <div className="stack-md">
-              <SectionTitle eyebrow="Event discovery" title="Calendar Preferences" body="Preference UI is staged for future event recommendations and partner discovery." />
-              <PlannedFieldList fields={plannedFieldGroups.calendar} />
+              <SectionTitle eyebrow="Event discovery" title="Calendar Preferences" body="Preferences now persist for future event recommendations and partner discovery." />
+              <CsvField label="Interested event types" value={form.interestedEventTypes} placeholder="Live tournament, Creator event" onChange={(interestedEventTypes) => setForm((current) => ({ ...current, interestedEventTypes }))} />
+              <label>
+                <span>Preferred region</span>
+                <input className="field" value={form.preferredRegion} onChange={(event) => setForm((current) => ({ ...current, preferredRegion: event.target.value }))} />
+              </label>
+              <label>
+                <span>Max travel distance km</span>
+                <input className="field" type="number" min="0" value={form.maxTravelDistanceKm} onChange={(event) => setForm((current) => ({ ...current, maxTravelDistanceKm: event.target.value }))} />
+              </label>
+              <label className="toggle-row">
+                <input type="checkbox" checked={form.onlineEventsAllowed} onChange={(event) => setForm((current) => ({ ...current, onlineEventsAllowed: event.target.checked }))} />
+                <span>Include online events</span>
+              </label>
+              <label className="toggle-row">
+                <input type="checkbox" checked={form.eventAlertsOptIn} onChange={(event) => setForm((current) => ({ ...current, eventAlertsOptIn: event.target.checked }))} />
+                <span>Event alerts opt-in</span>
+              </label>
+              <label className="toggle-row">
+                <input type="checkbox" checked={form.partnerOffersOptIn} onChange={(event) => setForm((current) => ({ ...current, partnerOffersOptIn: event.target.checked }))} />
+                <span>Partner offers opt-in</span>
+              </label>
+              <button className="button primary" type="button" onClick={() => void saveProfile()}>
+                Save calendar preferences
+              </button>
             </div>
           ) : null}
 
@@ -1214,18 +1316,19 @@ function ProfileSettingsPage() {
             <div>
               <h3>{form.displayName || "Display name"}</h3>
               <p>@{form.username || "username"}</p>
-              <small>Creator / Player profile</small>
+              <small>{form.profileType || "Creator / Player profile"}{form.country ? ` · ${form.country}` : ""}</small>
             </div>
           </div>
           <p>{form.bio || "Profile preview updates live while you edit."}</p>
           <div className="reputation-row">
+            {form.pokerRoles.slice(0, 2).map((role) => <span key={role}>{role}</span>)}
             <span>Weekly wins 0</span>
             <span>Total votes 0</span>
             <span>Rank pending</span>
           </div>
           <div className="badge-row">
             <span className="success-chip">League ready</span>
-            <span className="signed-in-chip">Identity in progress</span>
+            <span className="signed-in-chip">{form.interestedEventTypes.length ? "Calendar tuned" : "Identity in progress"}</span>
           </div>
           {profile ? <small>User #{profile.userId}</small> : null}
         </aside>

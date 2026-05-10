@@ -106,6 +106,20 @@ export type Profile = {
   bio: string | null;
   avatarUrl: string | null;
   bannerUrl: string | null;
+  country?: string | null;
+  city?: string | null;
+  languages?: string[];
+  profileType?: string | null;
+  pokerRoles?: string[];
+  preferredGames?: string[];
+  preferredFormats?: string[];
+  contentFocus?: string[];
+  preferredRegion?: string | null;
+  interestedEventTypes?: string[];
+  onlineEventsAllowed?: boolean;
+  maxTravelDistanceKm?: number | null;
+  eventAlertsOptIn?: boolean;
+  partnerOffersOptIn?: boolean;
 };
 
 export type CreatorProfile = {
@@ -139,3 +153,28 @@ export type AuthResponse = {
 };
 
 export type SocialAuthProvider = "google" | "microsoft";
+
+export type PokerEvent = {
+  id: number;
+  title: string;
+  organizerName: string;
+  organizerType: string;
+  eventType: string;
+  startsAt: string;
+  endsAt: string | null;
+  timezone: string;
+  locationType: string;
+  country: string | null;
+  city: string | null;
+  venueName: string | null;
+  onlineUrl: string | null;
+  registrationUrl: string | null;
+  affiliateUrl: string | null;
+  affiliateDisclosureRequired: boolean;
+  imageUrl: string | null;
+  description: string | null;
+  tags: string[];
+  status: string;
+  featured: boolean;
+  sponsored: boolean;
+};

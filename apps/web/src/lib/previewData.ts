@@ -1,4 +1,4 @@
-import type { Clip, Comment, Contest, CreatorLeaderboardRow, CreatorProfile, LeaderboardRow, Profile, ReactionSummary } from "../types";
+import type { Clip, Comment, Contest, CreatorLeaderboardRow, CreatorProfile, LeaderboardRow, PokerEvent, Profile, ReactionSummary } from "../types";
 
 const now = Date.now();
 const startsAt = new Date(now - 36e5).toISOString();
@@ -118,6 +118,20 @@ export const previewProfile: Profile = {
   bio: "Premium poker creator focused on decisive tournament moments.",
   avatarUrl: "/images/creator-avatar.jpeg",
   bannerUrl: "/images/thumbnails/high-stakes.jpeg",
+  country: "Norway",
+  city: "Oslo",
+  languages: ["English", "Norwegian"],
+  profileType: "Creator",
+  pokerRoles: ["Live player", "Creator"],
+  preferredGames: ["Texas Hold'em", "Omaha"],
+  preferredFormats: ["Tournament", "Live events"],
+  contentFocus: ["Hand breakdowns", "River moments"],
+  preferredRegion: "Nordics and online",
+  interestedEventTypes: ["Live tournament", "Creator event", "Watch party"],
+  onlineEventsAllowed: true,
+  maxTravelDistanceKm: 500,
+  eventAlertsOptIn: true,
+  partnerOffersOptIn: false,
 };
 
 export const previewComments: Comment[] = [
@@ -134,4 +148,55 @@ export const previewComments: Comment[] = [
 export const previewReactions: ReactionSummary[] = [
   { reactionType: "RESPECT", count: 42, reactedByCurrentUser: false },
   { reactionType: "CLUTCH", count: 31, reactedByCurrentUser: false },
+];
+
+export const previewEvents: PokerEvent[] = [
+  {
+    id: 1,
+    title: "Nordic Poker Weekend",
+    organizerName: "Partner card room",
+    organizerType: "Partner",
+    eventType: "Live tournament",
+    startsAt: "2026-05-24T18:00:00Z",
+    endsAt: "2026-05-26T22:00:00Z",
+    timezone: "Europe/Oslo",
+    locationType: "LIVE",
+    country: "Norway",
+    city: "Oslo",
+    venueName: "Oslo poker club",
+    onlineUrl: null,
+    registrationUrl: "https://example.com/nordic-poker-weekend",
+    affiliateUrl: "https://example.com/nordic-poker-weekend?partner=propokertv",
+    affiliateDisclosureRequired: true,
+    imageUrl: "/images/thumbnails/high-stakes.jpeg",
+    description: "A curated live tournament weekend surfaced as a partner discovery card for the ProPokerTV audience.",
+    tags: ["live tournament", "nordic", "partner"],
+    status: "PUBLISHED",
+    featured: true,
+    sponsored: true,
+  },
+  {
+    id: 2,
+    title: "Creator Hand Review Night",
+    organizerName: "ProPokerTV creators",
+    organizerType: "Creator",
+    eventType: "Creator event",
+    startsAt: "2026-06-02T19:00:00Z",
+    endsAt: null,
+    timezone: "Europe/Oslo",
+    locationType: "ONLINE",
+    country: null,
+    city: null,
+    venueName: null,
+    onlineUrl: "https://example.com/creator-review-night",
+    registrationUrl: "https://example.com/creator-review-night",
+    affiliateUrl: null,
+    affiliateDisclosureRequired: false,
+    imageUrl: "/images/thumbnails/strategy.jpeg",
+    description: "An online creator event focused on hand breakdowns, reputation, and community discovery.",
+    tags: ["online", "creator", "hand review"],
+    status: "PUBLISHED",
+    featured: false,
+    sponsored: false,
+  },
 ];
