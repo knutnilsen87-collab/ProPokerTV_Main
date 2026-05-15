@@ -89,6 +89,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           <NavLink to="/upload">Upload</NavLink>
           {currentUser ? <NavLink to="/settings/profile">Profile</NavLink> : null}
           {canManage ? <NavLink to="/admin/contests">Admin</NavLink> : null}
+          {canManage ? <NavLink to="/admin/calendar">Event Admin</NavLink> : null}
           {canManage ? <NavLink to="/admin/moderation">Moderation</NavLink> : null}
         </nav>
 
@@ -729,6 +730,7 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
   const microsoftClientId = import.meta.env.VITE_MICROSOFT_CLIENT_ID as string | undefined;
   const microsoftTenantId = (import.meta.env.VITE_MICROSOFT_TENANT_ID as string | undefined) || "common";
+  const showDemoAccounts = import.meta.env.DEV || import.meta.env.VITE_SHOW_DEMO_ACCOUNTS === "true";
 
   const handleSocialToken = async (provider: SocialAuthProvider, idToken: string) => {
     setError(null);
@@ -858,20 +860,22 @@ function AuthPage({ mode }: { mode: "login" | "register" }) {
         <span className="eyebrow">{mode === "login" ? "Return to the table" : "Registration flow"}</span>
         <h1>{mode === "login" ? "Sign in" : "Create account"}</h1>
         <p>Create an account to vote, upload clips, build creator reputation, and return to the weekly league without friction.</p>
-        <div className="demo-accounts">
-          {api.DEMO_ACCOUNTS.map((account) => (
-            <button
-              className="demo-chip"
-              key={account.email}
-              onClick={() => {
-                setEmail(account.email);
-                setPassword(account.password);
-              }}
-            >
-              {account.label}
-            </button>
-          ))}
-        </div>
+        {showDemoAccounts ? (
+          <div className="demo-accounts">
+            {api.DEMO_ACCOUNTS.map((account) => (
+              <button
+                className="demo-chip"
+                key={account.email}
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword(account.password);
+                }}
+              >
+                {account.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       <section className="panel auth-form">
@@ -1053,7 +1057,16 @@ function CalendarPage() {
               </dl>
               <p>{event.description}</p>
               {event.affiliateDisclosureRequired ? <span className="success-chip">Partner link disclosed</span> : null}
-              <a className="button secondary" href={event.affiliateUrl ?? event.registrationUrl ?? event.onlineUrl ?? "#"} target="_blank" rel="noreferrer">
+              <a
+                className="button secondary"
+                href={event.affiliateUrl ?? event.registrationUrl ?? event.onlineUrl ?? "#"}
+                onClick={() => {
+                  const targetType = event.affiliateUrl ? "affiliate" : event.registrationUrl ? "partner" : "official";
+                  void api.trackCalendarClick(event.id, targetType, "/calendar").catch(() => undefined);
+                }}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {event.affiliateUrl ? "Register with partner" : "Learn more"}
               </a>
             </article>
@@ -1445,6 +1458,112 @@ function UploadPage() {
   );
 }
 
+function AdminCalendarPage() {
+  const { tokens, setTokens, currentUser } = useAuth();
+  const [events, setEvents] = useState<PokerEvent[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    title: "Partner Event",
+    organizerName: "ProPokerTV partner",
+    organizerType: "Partner",
+    eventType: "Partner contest",
+    startsAt: new Date(Date.now() + 7 * 24 * 36e5).toISOString().slice(0, 16),
+    timezone: "Europe/Oslo",
+    locationType: "ONLINE",
+    registrationUrl: "https://example.com/event",
+    affiliateUrl: "",
+    description: "Safety-reviewed poker media event.",
+    sponsored: false,
+  });
+
+  const load = async () => {
+    await api.getCalendarEvents().then(setEvents).catch(() => setEvents([]));
+  };
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    try {
+      const created = await api.withRefresh((auth) => api.createCalendarEvent(auth, {
+        ...form,
+        startsAt: new Date(form.startsAt).toISOString(),
+        status: "DRAFT",
+        tags: ["partner", "calendar"],
+        affiliateDisclosureRequired: Boolean(form.affiliateUrl),
+        featured: form.sponsored,
+      }), tokens, setTokens);
+      setMessage(`Event created: ${created.title}`);
+      await load();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Failed to create event.");
+    }
+  };
+
+  const changeStatus = async (eventId: number, action: "publish" | "remove") => {
+    try {
+      const updated = await api.withRefresh(
+        (auth) => action === "publish" ? api.publishCalendarEvent(auth, eventId) : api.removeCalendarEvent(auth, eventId),
+        tokens,
+        setTokens,
+      );
+      setMessage(`${updated.title} is now ${updated.status}.`);
+      await load();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Failed to update event.");
+    }
+  };
+
+  if (!currentUser || (currentUser.role !== "ADMIN" && currentUser.role !== "MODERATOR")) {
+    return <div className="error-banner">Admin or moderator access required.</div>;
+  }
+
+  return (
+    <div className="stack-lg">
+      <SectionTitle eyebrow="Event operations" title="Calendar admin" body="Create, publish, and remove event listings with partner disclosure controls." />
+      <div className="settings-grid">
+        <form className="panel stack-sm" onSubmit={submit}>
+          <label><span>Title</span><input className="field" value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} /></label>
+          <label><span>Organizer</span><input className="field" value={form.organizerName} onChange={(event) => setForm((current) => ({ ...current, organizerName: event.target.value }))} /></label>
+          <label><span>Event type</span><input className="field" value={form.eventType} onChange={(event) => setForm((current) => ({ ...current, eventType: event.target.value }))} /></label>
+          <label><span>Starts at</span><input className="field" type="datetime-local" value={form.startsAt} onChange={(event) => setForm((current) => ({ ...current, startsAt: event.target.value }))} /></label>
+          <label><span>Registration URL</span><input className="field" value={form.registrationUrl} onChange={(event) => setForm((current) => ({ ...current, registrationUrl: event.target.value }))} /></label>
+          <label><span>Affiliate URL</span><input className="field" value={form.affiliateUrl} onChange={(event) => setForm((current) => ({ ...current, affiliateUrl: event.target.value }))} /></label>
+          <label><span>Description</span><textarea className="field" rows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} /></label>
+          <label className="toggle-row">
+            <input type="checkbox" checked={form.sponsored} onChange={(event) => setForm((current) => ({ ...current, sponsored: event.target.checked }))} />
+            <span>Sponsored placement</span>
+          </label>
+          {message ? <div className="success-chip">{message}</div> : null}
+          {error ? <div className="inline-error">{error}</div> : null}
+          <button className="button primary">Create draft event</button>
+        </form>
+
+        <div className="panel stack-sm">
+          <h3>Published event controls</h3>
+          {events.map((event) => (
+            <article className="report-row" key={event.id}>
+              <div>
+                <strong>{event.title}</strong>
+                <p>{event.status} · {event.sponsored ? "Sponsored" : "Organic"} · {event.affiliateDisclosureRequired ? "Disclosure required" : "No affiliate disclosure"}</p>
+              </div>
+              <div className="card-actions">
+                <button className="button secondary" type="button" onClick={() => void changeStatus(event.id, "publish")}>Publish</button>
+                <button className="button secondary" type="button" onClick={() => void changeStatus(event.id, "remove")}>Remove</button>
+              </div>
+            </article>
+          ))}
+          {!events.length ? <p>No published events returned by the public feed yet.</p> : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NotFoundPage() {
   return (
     <div className="empty-card">
@@ -1483,6 +1602,7 @@ export function App() {
           <Route path="/settings/profile" element={<ProfileSettingsPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/admin/contests" element={<AdminContestPage />} />
+          <Route path="/admin/calendar" element={<AdminCalendarPage />} />
           <Route path="/admin/moderation" element={<ModerationQueuePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

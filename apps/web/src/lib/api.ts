@@ -440,3 +440,57 @@ export async function getCalendarEvents(): Promise<PokerEvent[]> {
     () => previewEvents,
   );
 }
+
+export async function trackCalendarClick(eventId: number, targetUrlType: "official" | "affiliate" | "partner", referrerPage: string): Promise<string> {
+  return request<string>(`/api/v1/calendar/events/${eventId}/outbound-click`, {
+    method: "POST",
+    body: JSON.stringify({
+      sessionId: window.sessionStorage.getItem("pptv-session-id") ?? "anonymous-preview",
+      targetUrlType,
+      referrerPage,
+    }),
+  });
+}
+
+export type CalendarEventPayload = {
+  title: string;
+  organizerName: string;
+  organizerType: string;
+  eventType: string;
+  startsAt: string;
+  endsAt?: string | null;
+  timezone: string;
+  locationType: string;
+  country?: string;
+  city?: string;
+  venueName?: string;
+  onlineUrl?: string;
+  registrationUrl?: string;
+  affiliateUrl?: string;
+  affiliateDisclosureRequired?: boolean;
+  imageUrl?: string;
+  description?: string;
+  tags?: string[];
+  status?: string;
+  featured?: boolean;
+  sponsored?: boolean;
+};
+
+export async function createCalendarEvent(tokens: Tokens, payload: CalendarEventPayload): Promise<PokerEvent> {
+  return request<PokerEvent>(
+    "/api/v1/calendar/admin/events",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    tokens,
+  );
+}
+
+export async function publishCalendarEvent(tokens: Tokens, eventId: number): Promise<PokerEvent> {
+  return request<PokerEvent>(`/api/v1/calendar/admin/events/${eventId}/publish`, { method: "POST" }, tokens);
+}
+
+export async function removeCalendarEvent(tokens: Tokens, eventId: number): Promise<PokerEvent> {
+  return request<PokerEvent>(`/api/v1/calendar/admin/events/${eventId}/remove`, { method: "POST" }, tokens);
+}

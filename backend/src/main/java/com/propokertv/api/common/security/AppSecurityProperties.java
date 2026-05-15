@@ -15,4 +15,6 @@ public class AppSecurityProperties {
     private long emailVerificationTokenTtlHours;
     private String secret;
     private String corsAllowedOrigins;
+    private int authRateLimitCapacity = 20;
+    private long authRateLimitWindowSeconds = 60;
 }
