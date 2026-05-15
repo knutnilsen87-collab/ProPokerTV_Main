@@ -1,13 +1,16 @@
 name: frontend-ci
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'apps/web/**'
+      - 'vercel.json'
       - '.github/workflows/frontend-ci.yml'
   pull_request:
     paths:
       - 'apps/web/**'
+      - 'vercel.json'
       - '.github/workflows/frontend-ci.yml'
 
 jobs:
